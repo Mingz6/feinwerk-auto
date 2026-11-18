@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+# Private: notes about the real shop that inspired this demo. Never commit or publish.
+research/
+# Real contact details for showing an owner in person (HYK pattern). Never deployed.
+src/data/site.private.json
