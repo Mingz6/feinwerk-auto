@@ -14,7 +14,7 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   projects: [
-    { name: "e2e", testMatch: /(theme|lang|home|services|booking|pages|french)\.spec\.ts/, use: { ...devices["Desktop Chrome"] } },
+    { name: "e2e", testMatch: /(theme|lang|home|services|booking|pages|french|chinese)\.spec\.ts/, use: { ...devices["Desktop Chrome"] } },
     { name: "axe", testMatch: /a11y\.spec\.ts/, use: { ...devices["Desktop Chrome"] } },
   ],
   webServer: {

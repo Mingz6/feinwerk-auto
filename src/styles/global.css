@@ -25,9 +25,10 @@
     background: var(--bg);
     color: var(--text);
   }
-  :lang(zh-Hans) { font-family: var(--font-body), var(--cjk-hans); }
-  :lang(zh-HK) { font-family: var(--font-body), var(--cjk-hk); }
-  h1, h2, h3 { font-family: var(--font-display); line-height: 1.12; text-wrap: balance; }
+  /* Chinese takes the system stack after each Latin font. --cjk follows the nearest lang, so mono and display text get it too. */
+  :lang(zh-Hans) { --cjk: var(--cjk-hans); font-family: var(--font-body), var(--cjk-hans); }
+  :lang(zh-HK) { --cjk: var(--cjk-hk); font-family: var(--font-body), var(--cjk-hk); }
+  h1, h2, h3 { font-family: var(--font-display), var(--cjk, sans-serif); line-height: 1.12; text-wrap: balance; }
   :lang(zh-Hans) :is(h1, h2, h3) { font-family: var(--font-display), var(--cjk-hans); }
   :lang(zh-HK) :is(h1, h2, h3) { font-family: var(--font-display), var(--cjk-hk); }
   h1 { font-size: clamp(2.125rem, 8.5vw, 4rem); font-weight: 800; font-stretch: 112%; letter-spacing: -0.015em; }
@@ -37,7 +38,7 @@
   :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
   main { flex: 1; }
   .phone { white-space: nowrap; }
-  .mono { font-family: var(--font-mono); font-weight: 500; font-size: 0.875em; letter-spacing: 0.01em; }
+  .mono { font-family: var(--font-mono), var(--cjk, monospace); font-weight: 500; font-size: 0.875em; letter-spacing: 0.01em; }
   .vh { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
   [hidden] { display: none !important; }
   @media (prefers-reduced-motion: no-preference) {
@@ -63,15 +64,15 @@
 
   .concept { background: var(--surface); border-bottom: var(--hairline) solid var(--line); font-size: 0.8125rem; padding: 0.375rem var(--gutter); text-align: center; }
 
-  .eyebrow { font-family: var(--font-mono); font-weight: 500; font-size: 0.8125rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .eyebrow { font-family: var(--font-mono), var(--cjk, monospace); font-weight: 500; font-size: 0.8125rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .eyebrow .mono { color: var(--text); letter-spacing: 0.04em; }
-  .tag { display: inline-block; font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 0 0.375rem; border: var(--hairline) solid currentColor; border-radius: var(--radius); line-height: 1.5; vertical-align: 0.1em; }
+  .tag { display: inline-block; font-family: var(--font-mono), var(--cjk, monospace); font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 0 0.375rem; border: var(--hairline) solid currentColor; border-radius: var(--radius); line-height: 1.5; vertical-align: 0.1em; }
 
   /* Header */
   .header { border-bottom: var(--hairline) solid var(--line); background: var(--bg); }
   .header-row { display: flex; align-items: center; gap: 0.25rem; padding-block: 0.375rem; }
   .brand { display: flex; flex-direction: column; min-height: var(--tap); justify-content: center; color: var(--text); text-decoration: none; margin-inline-end: auto; line-height: 1.2; }
-  .brand-name { font-family: var(--font-display); font-weight: 800; font-stretch: 125%; letter-spacing: 0.06em; text-transform: uppercase; }
+  .brand-name { font-family: var(--font-display), var(--cjk, sans-serif); font-weight: 800; font-stretch: 125%; letter-spacing: 0.06em; text-transform: uppercase; }
   .brand-desc { font-size: 0.75rem; color: var(--muted); }
   .header-nav { display: none; }
   .header-nav a:not(.btn) { display: inline-flex; align-items: center; min-height: var(--tap); padding-inline: 0.625rem; color: var(--text); text-decoration: none; }
@@ -111,7 +112,7 @@
   .btn:hover { background: var(--surface); }
   .btn-primary { background: var(--button); border-color: var(--button); color: var(--button-text); }
   .btn-primary:hover { background: var(--button); filter: brightness(1.08); }
-  .btn-quiet { border-color: transparent; font-family: var(--font-mono); font-weight: 500; }
+  .btn-quiet { border-color: transparent; font-family: var(--font-mono), var(--cjk, monospace); font-weight: 500; }
   .btn-sm { min-height: var(--tap); padding-block: 0.375rem; margin-inline-start: 0.5rem; }
   .actions { display: flex; flex-wrap: wrap; gap: 0.625rem; }
 
@@ -140,7 +141,7 @@
   .hero-copy .lead { font-size: 1.0625rem; color: var(--muted); max-width: 34rem; }
   .photo-slot { position: relative; margin: 0; border-radius: var(--radius); overflow: hidden; background: var(--bg); color: var(--muted); aspect-ratio: 16 / 9; display: grid; place-items: center; }
   .photo-slot .art { width: 88%; height: auto; }
-  .slot-label { position: absolute; inset-inline-start: 0.5rem; bottom: 0.375rem; font-family: var(--font-mono); font-size: 0.6875rem; color: var(--muted); }
+  .slot-label { position: absolute; inset-inline-start: 0.5rem; bottom: 0.375rem; font-family: var(--font-mono), var(--cjk, monospace); font-size: 0.6875rem; color: var(--muted); }
 
   .hero-split { padding-block: 1.25rem 2rem; }
   /* Phones have Call in the bottom bar, so the hero keeps two buttons on one row. */
@@ -193,7 +194,7 @@
   .tile a { display: grid; gap: 0.25rem; align-content: end; height: 100%; min-height: 7.5rem; padding: 0.875rem; border: var(--hairline) solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--text); text-decoration: none; }
   .tile a:hover { border-color: var(--text); }
   .tile .art { width: 3.5rem; height: auto; color: var(--muted); margin-bottom: auto; }
-  .tile-title { font-family: var(--font-display); font-weight: 700; font-stretch: 105%; line-height: 1.2; }
+  .tile-title { font-family: var(--font-display), var(--cjk, sans-serif); font-weight: 700; font-stretch: 105%; line-height: 1.2; }
   .tile-sub { font-size: 0.75rem; color: var(--muted); }
   .tile-service a { min-height: 6.5rem; padding: 0.75rem; }
   .tile-service .art { width: 2.75rem; }
@@ -237,7 +238,7 @@
   /* Independent vs dealer */
   .compare { width: 100%; margin-top: 1.25rem; font-size: 0.9375rem; }
   .compare th, .compare td { text-align: start; vertical-align: top; padding: 0.75rem 0.5rem 0.75rem 0; border-bottom: var(--hairline) solid var(--line); }
-  .compare thead th { font-family: var(--font-mono); font-weight: 500; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+  .compare thead th { font-family: var(--font-mono), var(--cjk, monospace); font-weight: 500; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
   .compare tbody th { font-weight: 600; width: 28%; }
   .compare tbody td:nth-child(2) { font-weight: 600; }
   .compare tbody td:nth-child(3) { color: var(--muted); }
@@ -262,13 +263,13 @@
   .hours th, .hours td { text-align: start; padding: 0.375rem 0; border-bottom: var(--hairline) solid var(--line); font-weight: 400; }
   .hours td { text-align: end; }
   .hours tr.is-today th, .hours tr.is-today td { font-weight: 700; }
-  .today-tag { margin-inline-start: 0.5rem; font-family: var(--font-mono); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.06em; padding: 0 0.375rem; border-radius: var(--radius); background: var(--button); color: var(--button-text); }
+  .today-tag { margin-inline-start: 0.5rem; font-family: var(--font-mono), var(--cjk, monospace); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.06em; padding: 0 0.375rem; border-radius: var(--radius); background: var(--button); color: var(--button-text); }
   @media (min-width: 64rem) { .visit-grid { grid-template-columns: repeat(12, 1fr); } .visit-grid > :first-child { grid-column: 1 / span 7; } .visit-info { grid-column: 9 / -1; padding-top: 3rem; } }
 
   /* Footer */
   .footer { border-top: var(--hairline) solid var(--line); padding-block: 2rem 1.5rem; color: var(--muted); font-size: 0.9375rem; background: var(--surface); }
   .footer-grid { display: grid; gap: 1.25rem; }
-  .footer-title { font-size: 0.8125rem; font-family: var(--font-mono); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text); margin-bottom: 0.5rem; }
+  .footer-title { font-size: 0.8125rem; font-family: var(--font-mono), var(--cjk, monospace); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text); margin-bottom: 0.5rem; }
   .footer-contact { display: grid; gap: 0.25rem; }
   .footer-contact div { display: flex; gap: 0.5rem; }
   .footer-contact dt { color: var(--text); }
@@ -297,7 +298,7 @@
   }
 
   @media (min-width: 40rem) {
-    .header-phone { display: inline-flex; align-items: center; min-height: var(--tap); padding-inline: 0.5rem; font-family: var(--font-mono); font-weight: 500; }
+    .header-phone { display: inline-flex; align-items: center; min-height: var(--tap); padding-inline: 0.5rem; font-family: var(--font-mono), var(--cjk, monospace); font-weight: 500; }
   }
   @media (min-width: 64rem) {
     .header-row { gap: 1rem; }
@@ -338,7 +339,7 @@
   .svc-jump { padding-bottom: 1rem; }
   .svc-jump ul { list-style: none; margin: 0; padding: 0; }
 
-  .svc-label { display: block; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 0; }
+  .svc-label { display: block; font-family: var(--font-mono), var(--cjk, monospace); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 0; }
   .svc-small { font-size: 0.875rem; color: var(--muted); max-width: 42rem; }
   .svc-ticks { margin: 0; padding-inline-start: 1.25rem; display: grid; gap: 0.375rem; list-style: disc; }
 
@@ -400,7 +401,7 @@
   .book-form fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
   .book-step { display: grid; gap: 1rem; }
   .book-step[hidden] { display: none; }
-  .book-step > legend { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; margin-bottom: 0.75rem; }
+  .book-step > legend { font-family: var(--font-display), var(--cjk, sans-serif); font-weight: 700; font-size: 1.25rem; margin-bottom: 0.75rem; }
   .book-progress { font-size: 0.8125rem; color: var(--muted); }
   .book-label { font-weight: 600; margin-bottom: 0.5rem; }
   .book-choices, .book-choices .choices { display: grid; gap: 0.5rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 10rem), 1fr)); }
