@@ -1,0 +1,23 @@
+---
+import type { Locale } from "../lib/lang";
+import { useI18n } from "../i18n";
+import { nb, site, tel } from "../lib/site";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const { t } = useI18n(locale);
+const { street, city, region } = site.address;
+---
+
+<footer class="footer">
+  <div class="wrap">
+    <h2 class="footer-title">{t("footer.contact")}</h2>
+    <dl class="footer-contact">
+      <div><dt>{t("footer.address")}</dt><dd>{`${street}, ${city}, ${region}`}</dd></div>
+      <div><dt>{t("footer.phone")}</dt><dd><a class="phone" href={`tel:${tel}`}>{nb(site.phoneDisplay)}</a></dd></div>
+    </dl>
+    <p class="disclaimer" data-disclaimer>{t("footer.disclaimer")}</p>
+  </div>
+</footer>

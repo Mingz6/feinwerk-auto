@@ -1,0 +1,27 @@
+---
+import Base from "../layouts/Base.astro";
+import { LOCALES } from "../lib/lang";
+import { htmlLang, useI18n } from "../i18n";
+import { routeUrl } from "../lib/site";
+
+// One 404 serves every URL, so it shows all four languages and never redirects.
+const { t } = useI18n("en");
+---
+
+<Base locale="en" route="" notFound title={t("404.title")} description={t("404.text")}>
+  <section class="wrap hero">
+    <h1>{t("404.title")}</h1>
+    <ul class="lost">
+      {
+        LOCALES.map((l) => {
+          const tl = useI18n(l).t;
+          return (
+            <li lang={htmlLang[l]}>
+              {tl("404.text")} <a href={routeUrl(l)}>{tl("404.home")}</a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </section>
+</Base>
