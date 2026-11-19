@@ -29,15 +29,18 @@ test("bottom bar shows on phones and hides on desktop", async ({ page }) => {
   await expect(bar).toBeHidden();
 });
 
-test("phone menu opens, and a section link closes it", async ({ page }) => {
+test("phone menu opens, Escape closes it, and it links to every top-level page", async ({ page }) => {
   await page.setViewportSize(PHONE);
   await page.goto("./");
   const menu = page.locator(".nav-menu");
   await menu.locator("summary").click();
   await expect(menu.locator("nav")).toBeVisible();
-  await menu.getByRole("link", { name: "Visit" }).click();
-  await expect(page).toHaveURL(/#visit$/);
+  await page.keyboard.press("Escape");
   await expect(menu.locator("nav")).toBeHidden();
+  await menu.locator("summary").click();
+  for (const name of ["Blog", "About", "Reviews", "Book"]) await expect(menu.getByRole("link", { name, exact: true })).toBeVisible();
+  await menu.getByRole("link", { name: "Contact" }).click();
+  await expect(page).toHaveURL(/\/contact\/$/);
 });
 
 test.describe("open/closed chip on the Vancouver clock", () => {

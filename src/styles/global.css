@@ -471,6 +471,8 @@
   .post-fallback, .post-cta { margin-block: 1.5rem; }
 
   .lost-page { padding-block: 2rem 3rem; }
+  .lost-page h1 { font-size: clamp(2rem, 8vw, 3.5rem); }
+  .lost-page .lost { margin-block: 1rem 1.5rem; padding: 0; list-style: none; display: grid; gap: 0.25rem; }
   .lost-search { display: grid; gap: 0.375rem; max-width: 32rem; margin-top: 2rem; }
   .lost-search label { font-weight: 600; }
   .lost-row { display: flex; gap: 0.5rem; }
