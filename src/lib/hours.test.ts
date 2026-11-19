@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import site from "../data/site.json" with { type: "json" };
+import { fr } from "../i18n/fr.ts";
 import { describeStatus, formatTime, getStatus, weekdayName, zonedNow, type StatusStrings } from "./hours.ts";
 
 const at = (iso: string) => getStatus(new Date(iso), site.hours, site.timeZone);
@@ -67,16 +68,32 @@ test("start of daylight saving (Sun 8 Mar 2026) moves Monday opening to 15:00Z",
 });
 
 test("times and weekday names follow the page locale", () => {
-  assert.equal(formatTime("18:00", "en-CA"), "6:00 p.m.");
-  assert.equal(formatTime("08:30", "fr-CA"), "8 h 30");
+  assert.equal(formatTime("18:00", "en-CA"), "6:00\u00a0p.m.");
+  assert.equal(formatTime("08:30", "fr-CA"), "8\u00a0h\u00a030");
+  assert.equal(formatTime("17:00", "fr-CA"), "17\u00a0h");
+  assert.equal(formatTime("09:00", "fr-CA"), "9\u00a0h");
   assert.equal(formatTime("18:00", "zh-Hans"), "18:00");
   assert.equal(weekdayName(1, "en-CA"), "Monday");
   assert.equal(weekdayName(0, "fr-CA"), "dimanche");
 });
 
 test("describeStatus builds the chip text", () => {
-  assert.deepEqual(describeStatus(at("2026-10-29T20:00:00Z"), strings, "en-CA"), ["Open", "closes 6:00 p.m."]);
-  assert.deepEqual(describeStatus(at("2026-10-30T14:59:00Z"), strings, "en-CA"), ["Closed", "opens 8:00 a.m."]);
-  assert.deepEqual(describeStatus(at("2026-10-30T01:00:00Z"), strings, "en-CA"), ["Closed", "opens tomorrow 8:00 a.m."]);
-  assert.deepEqual(describeStatus(at("2025-11-01T22:00:00Z"), strings, "en-CA"), ["Closed", "opens Monday 8:00 a.m."]);
+  assert.deepEqual(describeStatus(at("2026-10-29T20:00:00Z"), strings, "en-CA"), ["Open", "closes 6:00\u00a0p.m."]);
+  assert.deepEqual(describeStatus(at("2026-10-30T14:59:00Z"), strings, "en-CA"), ["Closed", "opens 8:00\u00a0a.m."]);
+  assert.deepEqual(describeStatus(at("2026-10-30T01:00:00Z"), strings, "en-CA"), ["Closed", "opens tomorrow 8:00\u00a0a.m."]);
+  assert.deepEqual(describeStatus(at("2025-11-01T22:00:00Z"), strings, "en-CA"), ["Closed", "opens Monday 8:00\u00a0a.m."]);
+});
+
+test("describeStatus in French: 24-hour clock, no-break spaces, \"17 h\" without \":00\"", () => {
+  const frStrings: StatusStrings = {
+    open: fr["status.open"], closed: fr["status.closed"], closes: fr["status.closes"],
+    opensToday: fr["status.opensToday"], opensTomorrow: fr["status.opensTomorrow"], opensDay: fr["status.opensDay"],
+  };
+  const [state, rest] = describeStatus(at("2026-10-29T20:00:00Z"), frStrings, "fr-CA");
+  assert.equal(state, fr["status.open"]);
+  assert.match(rest, /\d{1,2}\u00a0h$/);
+  assert.doesNotMatch(rest, /h\u00a000|a\.m\.|p\.m\./);
+  const [, monday] = describeStatus(at("2025-11-01T22:00:00Z"), frStrings, "fr-CA");
+  assert.match(monday, /lundi/);
+  assert.match(monday, /8\u00a0h$/);
 });

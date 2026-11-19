@@ -45,10 +45,16 @@ export const getStatus = (now: Date, hours: DayHours[], timeZone: string): Statu
   throw new Error("no opening hours in site.json");
 };
 
-/** "18:00" on the page's locale clock: "6:00 p.m." (en-CA), "18 h 00" (fr-CA), "18:00" (zh-Hans). */
+/**
+ * "18:00" on the page's locale clock: "6:00 p.m." (en-CA), "18 h" and "8 h 30" (fr-CA), "18:00" (zh-Hans).
+ * French drops ":00", as Canadian usage writes "17 h", not "17 h 00". Spaces become no-break spaces,
+ * so a time never wraps across two lines.
+ */
 export const formatTime = (hhmm: string, lang: string): string => {
   const [h, m] = hhmm.split(":").map(Number);
-  return new Intl.DateTimeFormat(lang, { hour: "numeric", minute: "2-digit", timeZone: "UTC" }).format(Date.UTC(2026, 0, 1, h, m));
+  const s = new Intl.DateTimeFormat(lang, { hour: "numeric", minute: "2-digit", timeZone: "UTC" }).format(Date.UTC(2026, 0, 1, h, m));
+  // Hour-only options give "09 h" in fr-CA, so the ":00" is trimmed from the full form instead.
+  return (lang.startsWith("fr") ? s.replace(/(\d\s?h)\s00$/, "$1") : s).replace(/\s/g, "\u00a0");
 };
 
 /** Weekday name in the page language; 1 Nov 2026 is a Sunday. */

@@ -98,7 +98,8 @@ const label = (r: Route): Key => {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       run();
-      const first = items.find((li) => !li.hidden)?.querySelector("a");
+      // Document order, read after the prepend above, so Enter opens the visitor's language first.
+      const first = form.ownerDocument.querySelector<HTMLAnchorElement>("[data-search-item]:not([hidden]) a");
       if (first && input.value.trim()) location.assign(first.href);
     });
     run();

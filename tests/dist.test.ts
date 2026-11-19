@@ -273,11 +273,14 @@ for (const x of ["", "fr/", "zh-hans/", "zh-hk/"]) {
     for (const s of ["misfire-vacuum-leak", "mercedes-service-a-b", "bc-winter-tires"]) assert.ok(html.includes(`href="${BASE}${x}blog/${s}/"`), s);
   });
 
-  test(`${x}blog posts: ${x ? "English body marked as English until Phase 3" : "no fallback note"}`, () => {
+  // Phase 3a translated the French posts; 简体中文 and 廣東話 show the English body until 3b and 3c.
+  const translated = x === "" || x === "fr/";
+  test(`${x}blog posts: ${translated ? "own body, no fallback note" : "English body marked as English until Phase 3"}`, () => {
     for (const s of ["misfire-vacuum-leak", "mercedes-service-a-b", "bc-winter-tires"]) {
       const html = read(`${x}blog/${s}/index.html`);
-      assert.equal(html.includes("data-post-fallback"), x !== "", s);
-      if (x) assert.match(html, /<div class="post-body" lang="en-CA">/, s);
+      assert.equal(html.includes("data-post-fallback"), !translated, s);
+      if (translated) assert.match(html, /<div class="post-body">/, s);
+      else assert.match(html, /<div class="post-body" lang="en-CA">/, s);
     }
   });
 }
@@ -290,6 +293,20 @@ test("the 3 posts: a diagnosis story, a Mercedes A/B explainer, a BC winter tire
   for (const w of ["Service A", "Service B", "Brake fluid", "Cabin air filter"]) assert.ok(ab.includes(w), w);
   const tires = body("bc-winter-tires");
   for (const w of ["1 October to 30 April", "3.5 mm", "M+S", "mountain and snowflake"]) assert.ok(tires.includes(w), w);
+});
+
+test("the 3 French posts carry their key terms in Canadian French, with no-break spaces", () => {
+  const NB = "\u00a0";
+  // text() folds every \s, no-break spaces included, so this one keeps them.
+  const keepNb = (html: string) => decode(html.replace(/<[^>]*>/g, " ")).replace(/[ \t\r\n]+/g, " ").replaceAll("\u2019", "'");
+  const body = (s: string) => keepNb(read(`fr/blog/${s}/index.html`).match(/<div class="post-body"[\s\S]*?<div class="card post-cta">/)![0]);
+  const misfire = body("misfire-vacuum-leak");
+  for (const w of ["corrections de carburant", "test de fumée", "raté d'allumage", `2${NB}500${NB}tr/min`, `+18${NB}%`, "main-d'œuvre"]) assert.ok(misfire.includes(w), w);
+  const ab = body("mercedes-service-a-b");
+  for (const w of ["Service A", "Service B", "liquide de frein", "filtre à air de l'habitacle", `16${NB}000${NB}km`]) assert.ok(ab.includes(w), w);
+  const tires = body("bc-winter-tires");
+  for (const w of ["1er octobre au 30 avril", `3,5${NB}mm`, "M+S", "montagne et du flocon de neige", "pneus d'hiver", `7${NB}°C`]) assert.ok(tires.includes(w), w);
+  for (const t of [misfire, ab, tires]) assert.doesNotMatch(t, / [:%»]|« |\d \d{3}\b/, "a breakable space in French typography");
 });
 
 test("404: search box, Call and Book; no canonical, hreflang, og:url or language redirect", () => {
