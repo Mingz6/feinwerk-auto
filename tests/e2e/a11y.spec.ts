@@ -2,7 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 const SERVICES = ["bmw-mini/", "mercedes-amg/", "vw-audi-porsche/", "tires/", "fleet/", "carplay-retrofit/", "pre-purchase-inspection/"];
-const PAGES = ["", "book/", "fr/", "fr/book/", "zh-hans/", "zh-hans/book/", "zh-hk/", "zh-hk/book/", "404.html", ...SERVICES, "fr/bmw-mini/", "zh-hans/tires/", "zh-hk/pre-purchase-inspection/"];
+const PAGES = ["", "book/", "contact/", "about/", "reviews/", "warranty/", "privacy/", "blog/", "blog/misfire-vacuum-leak/", "fr/contact/", "zh-hk/blog/bc-winter-tires/", "fr/", "fr/book/", "zh-hans/", "zh-hans/book/", "zh-hk/", "zh-hk/book/", "404.html", ...SERVICES, "fr/bmw-mini/", "zh-hans/tires/", "zh-hk/pre-purchase-inspection/"];
 const VIEWPORTS = { phone: { width: 390, height: 844 }, desktop: { width: 1440, height: 900 } };
 
 // Stored "en" keeps the English pages from redirecting, so each URL is tested as itself.

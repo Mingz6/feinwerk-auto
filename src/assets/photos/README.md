@@ -33,3 +33,7 @@ Each page shows an SVG line drawing in the hero until a photo exists. Same rules
 | Fleet | Two or three work vans or wagons lined up outside the bay door | 4:3 | 1200 × 900, AVIF ≤ 90 KB |
 | CarPlay retrofit | The factory screen showing CarPlay, dash trim in frame, no maker logo on screen | 4:3 | 1200 × 900, AVIF ≤ 90 KB |
 | Pre-purchase inspection | A tech with a paint-thickness gauge on a door panel | 4:3 | 1200 × 900, AVIF ≤ 90 KB |
+
+## Phase 2c pages
+
+No new slots beyond the table above. About uses the "About: the unit" and "About: parking" slots (an SVG lift drawing until then); the team shows initials, no faces. Blog posts use the three "Blog covers" slots once they exist; until then they have no image. Contact reuses the drawn map.

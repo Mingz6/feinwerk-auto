@@ -14,7 +14,6 @@ const { t } = useI18n(locale);
 const lang = htmlLang[locale];
 const { street, city, region } = site.address;
 const week = [1, 2, 3, 4, 5, 6, 0].map((w) => ({ w, ...site.hours[w] }));
-const home = routeUrl(locale);
 ---
 
 <footer class="footer">
@@ -37,7 +36,7 @@ const home = routeUrl(locale);
       <ul class="footer-links">
         <li><a href={routeUrl(locale, "book")}>{t("nav.book")}</a></li>
         {SERVICE_NAV.map((n) => <li><a href={routeUrl(locale, n.slug)}>{t(n.label as Key)}</a></li>)}
-        <li><a href={`${home}#visit`}>{t("nav.visit")}</a></li>
+        {(["contact", "about", "reviews", "blog", "warranty", "privacy"] as const).map((r) => <li><a href={routeUrl(locale, r)}>{t(`nav.${r}`)}</a></li>)}
       </ul>
     </div>
     <p class="disclaimer" data-disclaimer>{t("footer.disclaimer")}</p>

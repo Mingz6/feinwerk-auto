@@ -5,8 +5,9 @@ import { htmlLang, useI18n } from "../i18n";
 import type { Key } from "../i18n/en";
 import { routeUrl, site } from "../lib/site";
 import { bookQuery } from "../lib/book";
-import { formatTime, weekdayName } from "../lib/hours";
+import { POSTS, postText, postTitle } from "../data/posts";
 import Art from "../components/Art.astro";
+import Visit from "../components/Visit.astro";
 import HeroSplit from "../components/home/HeroSplit.astro";
 import HeroFull from "../components/home/HeroFull.astro";
 
@@ -35,12 +36,9 @@ const services = [
   { key: "carplay", href: routeUrl(locale, "carplay-retrofit"), art: "screen" },
 ] as const;
 const date = new Intl.DateTimeFormat(lang, { dateStyle: "medium", timeZone: "UTC" });
-const num = new Intl.NumberFormat(lang, { minimumFractionDigits: 0 });
 const money = new Intl.NumberFormat(lang, { style: "currency", currency: "CAD", maximumFractionDigits: 0 });
 const rows = ["price", "talk", "parts"] as const;
 // Monday first on the page; site.json is Sunday first.
-const week = [1, 2, 3, 4, 5, 6, 0].map((w) => ({ w, ...site.hours[w] }));
-const { street, city, region } = site.address;
 ---
 
 <Base locale={locale} route="" title={t("home.title", { name: site.name })} description={t("home.desc")}>
@@ -115,10 +113,10 @@ const { street, city, region } = site.address;
         </ol>
       </div>
       <div class="proof-side">
-        <h3>{t("reviews.h3")}</h3>
+        <h3><a href={routeUrl(locale, "reviews")}>{t("reviews.h3")}</a></h3>
         <ul class="reviews snap-row" data-sample tabindex="0" aria-label={t("reviews.h3")}>
           {
-            site.sample.reviews.map((r, i) => (
+            site.sample.reviews.slice(0, 3).map((r, i) => (
               <li class="card review">
                 <p class="review-meta">
                   <span class="stars" aria-hidden="true">{"★".repeat(r.rating) + "☆".repeat(5 - r.rating)}</span>
@@ -134,6 +132,7 @@ const { street, city, region } = site.address;
         <div class="card warranty">
           <h3>{t("warranty.title")}</h3>
           <p>{t("warranty.text")}</p>
+          <p><a href={routeUrl(locale, "warranty")}>{t("warranty.more")}</a></p>
         </div>
       </div>
     </div>
@@ -169,13 +168,13 @@ const { street, city, region } = site.address;
       <h2 id="blog-title">{t("blog.h2")}</h2>
       <ul class="posts snap-row" tabindex="0" aria-label={t("blog.h2")}>
         {
-          site.sample.posts.map((p, i) => (
+          POSTS.map((p) => (
             <li class="card post">
               <p class="post-meta mono">
-                <time datetime={p.date}>{date.format(new Date(p.date))}</time> · {t("blog.read", { min: num.format(p.minutes) })}
+                <time datetime={p.date}>{date.format(new Date(p.date))}</time>
               </p>
-              <h3>{t(`post.${i + 1}.title` as Key)}</h3>
-              <p>{t(`post.${i + 1}.text` as Key)}</p>
+              <h3><a href={routeUrl(locale, `blog/${p.slug}`)}>{t(postTitle(p))}</a></h3>
+              <p>{t(postText(p))}</p>
             </li>
           ))
         }
@@ -183,40 +182,5 @@ const { street, city, region } = site.address;
     </div>
   </section>
 
-  <section id="visit" class="section" aria-labelledby="visit-title" data-section="visit">
-    <div class="wrap visit-grid">
-      <div>
-        <p class="eyebrow">{t("visit.eyebrow")}</p>
-        <h2 id="visit-title">{t("visit.h2")}</h2>
-        <figure class="map">
-          <Art name="map" />
-          <figcaption><span class="tag">{t("sample")}</span> {t("visit.map")}</figcaption>
-        </figure>
-      </div>
-      <div class="visit-info">
-        <h3>{t("visit.address")}</h3>
-        <p>{`${street}, ${city}, ${region}`}</p>
-        {site.mapsUrl && <p><a href={site.mapsUrl}>{t("visit.directions")}</a></p>}
-        <h3>{t("visit.hours")}</h3>
-        <table class="hours">
-          <caption class="vh">{t("visit.hours")}</caption>
-          <tbody>
-            {
-              week.map((d) => (
-                <tr data-weekday={d.w}>
-                  <th scope="row">
-                    {weekdayName(d.w, lang)}
-                    <span class="today-tag" hidden>{t("visit.today")}</span>
-                  </th>
-                  <td class="mono">{d.open && d.close ? `${formatTime(d.open, lang)} – ${formatTime(d.close, lang)}` : t("visit.closed")}</td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
-        <h3>{t("visit.entrance")}</h3>
-        <p>{t("visit.entrance.text")}</p>
-      </div>
-    </div>
-  </section>
+  <Visit locale={locale} more />
 </Base>

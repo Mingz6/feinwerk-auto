@@ -70,3 +70,18 @@ PLAN.md's Decisions are settled; they are repeated here so each can be revisited
 - **`.btn` resets its background.** Until now every `.btn` was a link; a `<button class="btn">` showed the browser's grey in dark theme (axe: 4.46:1).
 - **The sheet's axe test runs with reduced motion.** It slides in over 0.25 s, and axe reads half-faded text as low contrast mid-animation (the same reason Phase 1 has no scroll reveals).
 - **No new photo slots.** The booking flow uses no images.
+
+## Phase 2c
+
+- **Phone and email patterns compile under the `v` flag.** The p2b pre-review found `[\d\s()+.\-]{7,}` invalid where browsers compile `pattern` with `v` (unescaped brackets in a class), so browsers ignored it. Both patterns now live in `src/lib/forms.ts`, the phone one needs seven digits like the provider, and the email one needs a dot after the `@`, so the browser and `validate()` agree. `tests/dist.test.ts` compiles every `pattern` in dist with `v`.
+- **Header: Services · Blog · About · Reviews · Book**, PLAN's navigation. Contact is in the phone menu, the footer and the home Visit block; a post marks Blog as current.
+- **Posts are Markdown in `src/content/blog/{locale}/{slug}.md`, loaded with `import.meta.glob`.** Titles and teasers stay in the dictionaries, so the home cards and the 404 index are translated. Reading time is counted from the source at 200 words a minute, not stored.
+- **Non-English post pages show the English body until Phase 3**, with a line in the page language ("This post is in English for now") and `lang="en-CA"` on the body, so screen readers switch voice. Phase 3 adds `src/content/blog/{fr,zh-hans,zh-hk}/` and the test that marks the fallback then flips to require them.
+- **The 404 search is an index of every page, filtered in the browser.** No search service (the site is `noindex`, so a web search finds nothing). The index lists the 18 pages in all four languages; the visitor's language (from the missing URL's prefix) goes first. Without JavaScript the form reloads `404.html?q=…` and the whole index shows. Enter opens the first match.
+- **Reviews page: six sample reviews**, each with the Sample tag, `data-sample-review` in code, and a lead that says they aren't from real customers. The 4.8 rating is tested to be the mean of the six.
+- **Privacy is a template to BC PIPA.** s.3 (who the Act covers) and s.10 (purposes on or before collection, and who answers questions) are their own sections, marked `data-pipa`; the rest follow ss.9, 23, 24, 29, 34 and 35. The privacy officer is reached at the sample phone and address. The booking and quote privacy lines link to it. A real shop's privacy officer should review it; it isn't legal advice.
+- **Warranty terms are labelled Sample** and match the home line: 12 months or 20,000 km, parts and labour.
+- **Contact form: phone required, email optional**, `method="dialog"` and the p2a demo-form script, so it never sends. "Make" reuses the booking labels.
+- **The Visit block is a component** (`src/components/Visit.astro`), shared by Home and Contact.
+- **Winter tire facts in the post** are hedged the same way as the Tires page: 1 October to 30 April on most signed highways, M+S or the mountain and snowflake symbol with 3.5 mm of tread, check the sign and DriveBC. The A/B post points to the car's own booklet for intervals. Both carry a "written for a design concept" line; a real shop should review them.
+- **The team is three sample people with initials, no photos.** PLAN's photo rule has no faces.

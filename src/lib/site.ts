@@ -15,8 +15,27 @@ export const siteBase = import.meta.env.BASE_URL.replace(/\/$/, "");
 /** English lives at the root; the other languages under their prefix. */
 export const pathPrefix: Record<Locale, string> = { en: "", fr: "fr/", "zh-hans": "zh-hans/", "zh-hk": "zh-hk/" };
 
-/** Every page that exists in all four languages. Phase 2 adds the rest of PLAN.md's 19. */
-export const ROUTES = ["", "book", "bmw-mini", "mercedes-amg", "vw-audi-porsche", "tires", "fleet", "carplay-retrofit", "pre-purchase-inspection"] as const;
+/** Every page that exists in all four languages: PLAN.md's 19 less the 404. */
+export const ROUTES = [
+  "",
+  "bmw-mini",
+  "mercedes-amg",
+  "vw-audi-porsche",
+  "tires",
+  "fleet",
+  "carplay-retrofit",
+  "pre-purchase-inspection",
+  "book",
+  "contact",
+  "about",
+  "reviews",
+  "warranty",
+  "privacy",
+  "blog",
+  "blog/misfire-vacuum-leak",
+  "blog/mercedes-service-a-b",
+  "blog/bc-winter-tires",
+] as const;
 export type Route = (typeof ROUTES)[number];
 
 export const routeUrl = (locale: Locale, route: Route = ""): string =>

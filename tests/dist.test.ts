@@ -199,3 +199,105 @@ for (const file of pages) {
     assert.ok(html.indexOf("data-privacy") > html.indexOf('name="email"'), "the privacy line sits under the fields");
   });
 }
+
+// Phase 2c: the other pages, the blog and the 404 (PLAN.md Information architecture).
+const ENGLISH_19 = [
+  "index.html", ...SERVICE_SLUGS.map((s) => `${s}/index.html`), "book/index.html", "contact/index.html", "about/index.html",
+  "reviews/index.html", "warranty/index.html", "privacy/index.html", "blog/index.html", "blog/misfire-vacuum-leak/index.html",
+  "blog/mercedes-service-a-b/index.html", "blog/bc-winter-tires/index.html", "404.html",
+];
+const read = (p: string) => readFileSync(join(DIST, p), "utf8");
+const text = (html: string) => decode(html.replace(/<(script|style)\b[\s\S]*?<\/\1>/g, "").replace(/<[^>]*>/g, " ")).replace(/\s+/g, " ");
+
+test("all 19 English pages in PLAN.md's table are built, each in four languages but the 404", () => {
+  assert.equal(ENGLISH_19.length, 19);
+  for (const p of ENGLISH_19) assert.ok(existsSync(join(DIST, p)), p);
+  for (const p of ENGLISH_19.filter((p) => p !== "404.html")) for (const x of ["fr/", "zh-hans/", "zh-hk/"]) assert.ok(existsSync(join(DIST, x, p)), x + p);
+});
+
+test("every HTML pattern compiles under the v flag browsers use, and phone and email reject what the provider rejects", () => {
+  const patterns = new Set(pages.flatMap((f) => [...readFileSync(f, "utf8").matchAll(/\spattern="([^"]+)"/g)].map((m) => decode(m[1]))));
+  assert.ok(patterns.size >= 2);
+  for (const p of patterns) new RegExp(`^(?:${p})$`, "v");
+  const html = read("book/index.html");
+  const re = (name: string) => new RegExp(`^(?:${decode(html.match(new RegExp(`name="${name}"[^>]*\\spattern="([^"]+)"`))![1])})$`, "v");
+  const phone = re("phone");
+  for (const ok of ["604-555-0148", "(604) 555-0148", "+1 604 555 0148", "604.555.0148"]) assert.ok(phone.test(ok), ok);
+  for (const bad of ["123", "555-01", "call me", "((((((("]) assert.ok(!phone.test(bad), bad);
+  const email = re("email");
+  assert.ok(email.test("a@b.co"));
+  for (const bad of ["a@b", "a b@c.d", "@b.co"]) assert.ok(!email.test(bad), bad);
+});
+
+test("the sample rating is the mean of the sample reviews", () => {
+  const site = JSON.parse(readFileSync("src/data/site.json", "utf8"));
+  const mean = site.sample.reviews.reduce((s: number, r: { rating: number }) => s + r.rating, 0) / site.sample.reviews.length;
+  assert.equal(Math.round(mean * 10) / 10, site.sample.rating);
+});
+
+for (const x of ["", "fr/", "zh-hans/", "zh-hk/"]) {
+  const lang = read(`${x}index.html`).match(/<html[^>]*\blang="([^"]+)"/)![1];
+
+  test(`${x}reviews/: every review is labelled Sample on screen and in code`, () => {
+    const html = read(`${x}reviews/index.html`);
+    const items = [...html.matchAll(/<li\b[^>]*data-sample-review[^>]*>([\s\S]*?)<\/li>/g)];
+    assert.equal(items.length, 6);
+    for (const m of items) assert.ok(text(m[1]).includes(sampleWord[lang]), "Sample tag");
+    assert.match(html, /<ul\b[^>]*\bdata-sample\b/);
+  });
+
+  test(`${x}privacy/: PIPA s.3 scope and s.10 purposes and contact`, () => {
+    const html = read(`${x}privacy/index.html`);
+    for (const s of ["s3", "s10", "s10-contact"]) assert.match(html, new RegExp(`data-pipa="${s}"`), s);
+    const officer = text(html.match(/data-pipa="s10-contact"[\s\S]*?<\/section>/)![0]);
+    assert.ok(officer.includes("604-555-0148") && officer.includes("88 Sample Way"), "privacy officer contact");
+    const purposes = html.match(/data-pipa="s10"[\s\S]*?<\/section>/)![0];
+    assert.equal([...purposes.matchAll(/<li>/g)].length, 4, "the four purposes");
+  });
+
+  test(`${x}book/ and contact/: the privacy line links to the privacy page`, () => {
+    for (const p of ["book", "contact"]) {
+      const line = read(`${x}${p}/index.html`).match(/<p\b[^>]*data-privacy[^>]*>[\s\S]*?<\/p>/)![0];
+      assert.ok(line.includes(`href="${BASE}${x}privacy/"`), p);
+    }
+  });
+
+  test(`${x}contact/: the quote form can't send anything`, () => {
+    const form = read(`${x}contact/index.html`).match(/<form\b[^>]*data-contact-form[^>]*>/)![0];
+    assert.match(form, /method="dialog"/);
+    assert.doesNotMatch(form, /\saction=/);
+  });
+
+  test(`${x}blog/: three posts, each linked`, () => {
+    const html = read(`${x}blog/index.html`);
+    for (const s of ["misfire-vacuum-leak", "mercedes-service-a-b", "bc-winter-tires"]) assert.ok(html.includes(`href="${BASE}${x}blog/${s}/"`), s);
+  });
+
+  test(`${x}blog posts: ${x ? "English body marked as English until Phase 3" : "no fallback note"}`, () => {
+    for (const s of ["misfire-vacuum-leak", "mercedes-service-a-b", "bc-winter-tires"]) {
+      const html = read(`${x}blog/${s}/index.html`);
+      assert.equal(html.includes("data-post-fallback"), x !== "", s);
+      if (x) assert.match(html, /<div class="post-body" lang="en-CA">/, s);
+    }
+  });
+}
+
+test("the 3 posts: a diagnosis story, a Mercedes A/B explainer, a BC winter tire guide with 1 Oct to 30 Apr", () => {
+  const body = (s: string) => text(read(`blog/${s}/index.html`).match(/<div class="post-body"[\s\S]*?<div class="card post-cta">/)![0]);
+  const misfire = body("misfire-vacuum-leak");
+  for (const w of ["fuel trim", "smoke test", "misfire"]) assert.ok(misfire.toLowerCase().includes(w), w);
+  const ab = body("mercedes-service-a-b");
+  for (const w of ["Service A", "Service B", "Brake fluid", "Cabin air filter"]) assert.ok(ab.includes(w), w);
+  const tires = body("bc-winter-tires");
+  for (const w of ["1 October to 30 April", "3.5 mm", "M+S", "mountain and snowflake"]) assert.ok(tires.includes(w), w);
+});
+
+test("404: search box, Call and Book; no canonical, hreflang, og:url or language redirect", () => {
+  const html = read("404.html");
+  assert.match(html, /<form\b[^>]*role="search"[^>]*>/);
+  assert.match(html, /<input\b[^>]*type="search"/);
+  assert.match(html, /href="tel:\+16045550148"/);
+  assert.ok(html.includes(`href="${BASE}book/"`), "Book");
+  assert.doesNotMatch(html, /rel="canonical"|<link\b[^>]*hreflang=|og:url|location\.replace/);
+  assert.equal([...html.matchAll(/<li\b[^>]*data-search-item/g)].length, 18 * 4, "index of every page in every language");
+});

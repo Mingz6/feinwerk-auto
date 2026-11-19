@@ -1,0 +1,44 @@
+---
+import Base from "../layouts/Base.astro";
+import type { Locale } from "../lib/lang";
+import { htmlLang, useI18n } from "../i18n";
+import { bookQuery } from "../lib/book";
+import { nb, routeUrl, site, tel } from "../lib/site";
+import { POSTS, postText, postTitle, readMinutes, type PostSlug } from "../data/posts";
+import { postBody } from "../lib/posts";
+
+interface Props {
+  locale: Locale;
+  slug: PostSlug;
+}
+const { locale, slug } = Astro.props;
+const { t } = useI18n(locale);
+const lang = htmlLang[locale];
+const post = POSTS.find((p) => p.slug === slug)!;
+const { Content, raw, fallback } = postBody(locale, slug);
+const date = new Intl.DateTimeFormat(lang, { dateStyle: "long", timeZone: "UTC" });
+const num = new Intl.NumberFormat(lang);
+const book = post.book;
+---
+
+<Base locale={locale} route={`blog/${slug}`} title={`${t(postTitle(post))} | ${site.name}`} description={t(postText(post))}>
+  <article class="wrap prose post-page" aria-labelledby="post-title" data-post={slug}>
+    <p class="eyebrow"><a href={routeUrl(locale, "blog")}>{t("blog.eyebrow")}</a></p>
+    <h1 id="post-title">{t(postTitle(post))}</h1>
+    <p class="post-meta mono">
+      <time datetime={post.date}>{date.format(new Date(post.date))}</time> · {t("blog.read", { min: num.format(readMinutes(raw)) })}
+    </p>
+    {fallback && <p class="post-fallback card" data-post-fallback>{t("post.fallback")}</p>}
+    <div class="post-body" lang={fallback ? htmlLang.en : undefined}>
+      <Content />
+    </div>
+    <div class="card post-cta">
+      <p>{t("post.cta", { phone: site.phoneDisplay })}</p>
+      <div class="actions">
+        <a class="btn btn-primary" href={`${routeUrl(locale, "book")}${bookQuery(book)}`} data-book data-book-make={"make" in book ? book.make : undefined} data-book-service={book.service}>{t("cta.book")}</a>
+        <a class="btn btn-quiet" href={`tel:${tel}`}>{nb(t("cta.call", { phone: site.phoneDisplay }))}</a>
+      </div>
+    </div>
+    <p><a href={routeUrl(locale, "blog")}>{t("post.back")}</a></p>
+  </article>
+</Base>
