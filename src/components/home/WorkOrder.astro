@@ -1,0 +1,40 @@
+---
+import type { Locale } from "../../lib/lang";
+import { htmlLang, useI18n } from "../../i18n";
+import { site } from "../../lib/site";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const { t } = useI18n(locale);
+const lang = htmlLang[locale];
+const wo = site.sample.workOrder;
+const money = new Intl.NumberFormat(lang, { style: "currency", currency: "CAD", maximumFractionDigits: 0 });
+const lines = [
+  { label: t("wo.line1"), state: "approved" },
+  { label: t("wo.line2"), state: "approved" },
+  { label: t("wo.line3"), state: "waiting" },
+] as const;
+---
+
+<div class="work-order" data-sample>
+  <p class="wo-head">
+    <span>{t("wo.label")}</span><span class="mono">{wo.number}</span><span class="tag">{t("sample")}</span>
+  </p>
+  <p class="wo-car">{wo.car} · <span class="mono">{t("wo.km", { km: new Intl.NumberFormat(lang).format(wo.km) })}</span></p>
+  <ol class="wo-lines">
+    {
+      lines.map((l, i) => (
+        <li class={`wo-line is-${l.state}`}>
+          <span class="wo-label">{l.label}</span>
+          <span class="mono wo-price">{money.format(wo.prices[i])}</span>
+          <span class="wo-state">
+            {l.state === "approved" ? t("wo.approved") : t("wo.waiting")}
+            {l.state === "waiting" && <span class="mono">{` · ${t("wo.photos", { count: wo.photos })}`}</span>}
+          </span>
+        </li>
+      ))
+    }
+  </ol>
+</div>
