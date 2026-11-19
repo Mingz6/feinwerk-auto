@@ -12,6 +12,12 @@ export type PostSlug = Post["slug"];
 export const postTitle = (p: Post) => `post.${p.n}.title` as Key;
 export const postText = (p: Post) => `post.${p.n}.text` as Key;
 
-/** Reading time at 200 words a minute, from the Markdown source. */
-export const readMinutes = (markdown: string): number =>
-  Math.max(1, Math.round(markdown.split(/\s+/).filter((w) => /\p{L}/u.test(w)).length / 200));
+/**
+ * Reading time from the Markdown source: 200 words a minute, plus 400 Chinese characters a minute.
+ * Chinese has no spaces between words, so splitting on spaces would make every Chinese post "1 min".
+ */
+export const readMinutes = (markdown: string): number => {
+  const han = markdown.match(/\p{Script=Han}/gu)?.length ?? 0;
+  const words = markdown.replace(/\p{Script=Han}+/gu, " ").split(/\s+/).filter((w) => /\p{L}/u.test(w)).length;
+  return Math.max(1, Math.round(words / 200 + han / 400));
+};

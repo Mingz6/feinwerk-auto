@@ -273,8 +273,8 @@ for (const x of ["", "fr/", "zh-hans/", "zh-hk/"]) {
     for (const s of ["misfire-vacuum-leak", "mercedes-service-a-b", "bc-winter-tires"]) assert.ok(html.includes(`href="${BASE}${x}blog/${s}/"`), s);
   });
 
-  // Phase 3a translated the French posts; 简体中文 and 廣東話 show the English body until 3b and 3c.
-  const translated = x === "" || x === "fr/";
+  // Phases 3a and 3b translated the French and 简体中文 posts; 廣東話 shows the English body until 3c.
+  const translated = x === "" || x === "fr/" || x === "zh-hans/";
   test(`${x}blog posts: ${translated ? "own body, no fallback note" : "English body marked as English until Phase 3"}`, () => {
     for (const s of ["misfire-vacuum-leak", "mercedes-service-a-b", "bc-winter-tires"]) {
       const html = read(`${x}blog/${s}/index.html`);
@@ -307,6 +307,20 @@ test("the 3 French posts carry their key terms in Canadian French, with no-break
   const tires = body("bc-winter-tires");
   for (const w of ["1er octobre au 30 avril", `3,5${NB}mm`, "M+S", "montagne et du flocon de neige", "pneus d'hiver", `7${NB}°C`]) assert.ok(tires.includes(w), w);
   for (const t of [misfire, ab, tires]) assert.doesNotMatch(t, / [:%»]|« |\d \d{3}\b/, "a breakable space in French typography");
+});
+
+test("the 3 简体中文 posts carry their key terms, with Chinese punctuation and the Chinese reading time", () => {
+  const page = (s: string) => read(`zh-hans/blog/${s}/index.html`);
+  const body = (s: string) => text(page(s).match(/<div class="post-body"[\s\S]*?<div class="card post-cta">/)![0]);
+  const misfire = body("misfire-vacuum-leak");
+  for (const w of ["燃油修正", "烟雾测试", "缺火", "+18%", "2,500 转"]) assert.ok(misfire.includes(w), w);
+  const ab = body("mercedes-service-a-b");
+  for (const w of ["Service A", "Service B", "刹车油", "空调滤清器", "16,000 公里", "MB 229.5"]) assert.ok(ab.includes(w), w);
+  const tires = body("bc-winter-tires");
+  for (const w of ["10 月 1 日至 4 月 30 日", "3.5 毫米", "M+S", "雪山雪花", "冬季轮胎", "7 °C"]) assert.ok(tires.includes(w), w);
+  for (const t of [misfire, ab, tires]) assert.doesNotMatch(t, /\p{Script=Han}[,.:;?!()]|[,:;?!(]\p{Script=Han}/u, "half-width punctuation next to Chinese");
+  // About 900 characters each: 2 minutes at 400 a minute, not the "1 min" that counting spaces gives.
+  for (const s of ["misfire-vacuum-leak", "mercedes-service-a-b", "bc-winter-tires"]) assert.match(text(page(s)), /2 分钟/, s);
 });
 
 test("404: search box, Call and Book; no canonical, hreflang, og:url or language redirect", () => {
