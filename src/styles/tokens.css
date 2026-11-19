@@ -1,0 +1,79 @@
+/*
+ * Colour tokens (PLAN.md, Themes and colour). OKLCH is the source; the hex beside each is its sRGB value,
+ * and every text pair was checked against WCAG 2.2 AA in both themes.
+ * Written out twice on purpose, never light-dark(): iOS Safari before 17.5 ignores it (HYK commit f5844aa).
+ *   1. system preference: @media (prefers-color-scheme: dark) on :root:not([data-theme="light"])
+ *   2. manual choice:     [data-theme="dark"]
+ * .garage is the dark band the light theme uses for proof sections; it takes the dark values in any theme.
+ */
+@layer tokens {
+  :root {
+    color-scheme: light;
+    --bg: oklch(0.985 0.003 260); /* #F9FAFC paper */
+    --surface: oklch(0.955 0.006 260); /* #EEF0F4 */
+    --text: oklch(0.2 0.012 260); /* #13161C ink, 17.3:1 on bg */
+    --muted: oklch(0.47 0.02 260); /* #545B66 steel, 6.5:1 on bg, 6.0:1 on surface */
+    --link: oklch(0.52 0.19 264); /* #2D5ED4, 5.5:1 on bg */
+    --button: #2d5ed4; /* white text 5.5:1 */
+    --button-text: #fff;
+    --line: oklch(0.88 0.008 260); /* hairlines, decorative only */
+    --focus: var(--link);
+    /* --signal (amber) is for dark surfaces only: the dark theme and .garage bands. */
+
+    --font-display: "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --cjk-hans: "PingFang SC", "Noto Sans CJK SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    --cjk-hk: "PingFang HK", "PingFang TC", "Noto Sans CJK HK", "Noto Sans CJK TC", "Noto Sans HK", "Microsoft JhengHei", sans-serif;
+
+    --radius: 4px;
+    --hairline: 1px;
+    --max: 72rem;
+    --gutter: clamp(1rem, 4vw, 2.5rem);
+    --tap: 44px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: oklch(0.17 0.012 260); /* #0C1015 garage */
+      --surface: oklch(0.22 0.014 260); /* #171B21 */
+      --text: oklch(0.94 0.005 260); /* #E9EBEF, 16.0:1 on bg */
+      --muted: oklch(0.74 0.015 260); /* #A5ABB5, 8.3:1 on bg, 7.5:1 on surface */
+      --link: oklch(0.74 0.13 264); /* #81A9FD, 8.2:1 on bg */
+      --button: #2d5ed4; /* white text 5.7:1 */
+      --button-text: #fff;
+      --line: oklch(0.3 0.014 260);
+      --signal: oklch(0.8 0.16 75); /* #F9AD26 amber, 9.1:1 on surface */
+    }
+  }
+
+  [data-theme="dark"],
+  .garage {
+    color-scheme: dark;
+    --bg: oklch(0.17 0.012 260); /* #0C1015 garage */
+    --surface: oklch(0.22 0.014 260); /* #171B21 */
+    --text: oklch(0.94 0.005 260); /* #E9EBEF, 16.0:1 on bg */
+    --muted: oklch(0.74 0.015 260); /* #A5ABB5, 8.3:1 on bg, 7.5:1 on surface */
+    --link: oklch(0.74 0.13 264); /* #81A9FD, 8.2:1 on bg */
+    --button: #2d5ed4; /* white text 5.7:1 */
+    --button-text: #fff;
+    --line: oklch(0.3 0.014 260);
+    --signal: oklch(0.8 0.16 75); /* #F9AD26 amber, 9.1:1 on surface */
+  }
+
+  /* Print always uses the light values, whatever the screen theme. */
+  @media print {
+    :root,
+    :root[data-theme],
+    .garage {
+      color-scheme: light;
+      --bg: #fff;
+      --surface: #fff;
+      --text: #000;
+      --muted: #333;
+      --link: #000;
+      --line: #999;
+    }
+  }
+}

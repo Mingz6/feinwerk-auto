@@ -1,0 +1,36 @@
+{
+  "name": "feinwerk-auto",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "check": "astro check",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "preview:network": "astro preview --host",
+    "test": "node --test \"src/**/*.test.ts\" \"tests/*.test.ts\"",
+    "test:unit": "node --test \"src/**/*.test.ts\"",
+    "test:dist": "node --test \"tests/*.test.ts\"",
+    "test:e2e": "playwright test --project=e2e",
+    "test:axe": "playwright test --project=axe",
+    "validate:html": "html-validate \"dist/**/*.html\"",
+    "check:links": "node scripts/check-links.mjs",
+    "lhci": "lhci autorun"
+  },
+  "dependencies": {
+    "astro": "^7.4.13"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@axe-core/playwright": "^4.14.0",
+    "@lhci/cli": "^0.16.1",
+    "@playwright/test": "^1.65.1",
+    "@types/node": "^26.6.6",
+    "html-validate": "^11.21.1",
+    "typescript": "^6.0.3"
+  }
+}

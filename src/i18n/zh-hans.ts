@@ -1,0 +1,38 @@
+import type { Dict } from "./en";
+
+// 简体中文 (written Mandarin). Ming proofreads this one.
+export const zhHans = {
+  "skip": "跳到主要内容",
+  "strip.label": "设计概念",
+  "strip.text": "虚构商家。文案、价格、评价和联系方式均为示例。",
+  "nav.primary": "主导航",
+  "nav.home": "首页",
+  "nav.book": "预约",
+  "nav.call": "致电",
+  "lang.label": "语言",
+  "theme.label": "主题",
+  "theme.auto": "自动",
+  "theme.light": "浅色",
+  "theme.dark": "深色",
+  "brand.descriptor": "欧洲车专修",
+  "footer.contact": "联系方式（示例）",
+  "footer.address": "地址",
+  "footer.phone": "电话",
+  "footer.disclaimer":
+    "Feinwerk Auto 是为设计概念虚构的商家，与任何公司或汽车制造商均无关联。品牌名称仅用于说明维修的车型。评价、评分和价格均为示例。",
+  "home.title": "{name} | 温哥华欧洲车维修",
+  "home.desc": "温哥华 BMW、MINI、Mercedes-Benz、VW、Audi 和 Porsche 保养与维修。设计概念，虚构商家。",
+  "home.h1": "温哥华欧洲车专修",
+  "home.lead": "一分钟内在线预约。我们检查后把照片发给您，您在手机上逐项确认。",
+  "home.status": "网站建设中，完整设计即将上线。",
+  "cta.book": "在线预约",
+  "cta.call": "致电 {phone}",
+  "book.title": "预约 | {name}",
+  "book.desc": "在温哥华 {name} 预约。演示网站，不会发送任何信息。",
+  "book.h1": "预约到店",
+  "book.lead": "在线预约功能即将加入此演示。在此之前，请致电 {phone}。",
+  "book.demo": "这是演示，不会发送任何信息。",
+  "404.title": "找不到页面",
+  "404.text": "这个页面不存在。",
+  "404.home": "返回首页",
+} satisfies Dict;

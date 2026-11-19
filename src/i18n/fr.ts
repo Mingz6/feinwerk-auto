@@ -1,0 +1,38 @@
+import type { Dict } from "./en";
+
+// Français (Canada). Needs a native speaker's pass before the demo is shown (PLAN.md, Open).
+export const fr = {
+  "skip": "Passer au contenu",
+  "strip.label": "Concept de design",
+  "strip.text": "Entreprise fictive. Textes, prix, avis et coordonnées donnés à titre d'exemple.",
+  "nav.primary": "Principal",
+  "nav.home": "Accueil",
+  "nav.book": "Réserver",
+  "nav.call": "Appeler",
+  "lang.label": "Langue",
+  "theme.label": "Thème",
+  "theme.auto": "Auto",
+  "theme.light": "Clair",
+  "theme.dark": "Sombre",
+  "brand.descriptor": "Spécialistes des voitures européennes",
+  "footer.contact": "Coordonnées (exemple)",
+  "footer.address": "Adresse",
+  "footer.phone": "Téléphone",
+  "footer.disclaimer":
+    "Feinwerk Auto est une entreprise fictive créée pour un concept de design. Elle n'est affiliée à aucune entreprise ni à aucun constructeur automobile. Les noms de marques décrivent seulement les véhicules entretenus. Les avis, la note et les prix sont des exemples.",
+  "home.title": "{name} | Réparation de voitures européennes à Vancouver",
+  "home.desc": "Entretien et réparation de BMW, MINI, Mercedes-Benz, VW, Audi et Porsche à Vancouver. Concept de design pour un garage fictif.",
+  "home.h1": "Spécialistes des voitures européennes à Vancouver",
+  "home.lead": "Réservez en ligne en moins d'une minute. Nous inspectons, nous vous envoyons des photos et vous approuvez chaque ligne depuis votre téléphone.",
+  "home.status": "Site en construction. La version complète arrive bientôt.",
+  "cta.book": "Réserver en ligne",
+  "cta.call": "Appeler le {phone}",
+  "book.title": "Réserver | {name}",
+  "book.desc": "Réservez un rendez-vous chez {name}, à Vancouver. Une démo : rien n'est envoyé.",
+  "book.h1": "Réserver un rendez-vous",
+  "book.lead": "La réservation en ligne arrive bientôt dans cette démo. D'ici là, appelez le {phone}.",
+  "book.demo": "Ceci est une démo. Rien n'est envoyé.",
+  "404.title": "Page introuvable",
+  "404.text": "Cette page n'existe pas.",
+  "404.home": "Retour à l'accueil",
+} satisfies Dict;

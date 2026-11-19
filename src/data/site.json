@@ -1,0 +1,21 @@
+{
+  "name": "Feinwerk Auto",
+  "phone": "+1 604-555-0148",
+  "phoneDisplay": "604-555-0148",
+  "address": {
+    "street": "88 Sample Way",
+    "city": "Vancouver",
+    "region": "BC",
+    "postal": ""
+  },
+  "timeZone": "America/Vancouver",
+  "hours": [
+    { "day": "Sunday", "open": null, "close": null },
+    { "day": "Monday", "open": "08:00", "close": "18:00" },
+    { "day": "Tuesday", "open": "08:00", "close": "18:00" },
+    { "day": "Wednesday", "open": "08:00", "close": "18:00" },
+    { "day": "Thursday", "open": "08:00", "close": "18:00" },
+    { "day": "Friday", "open": "08:00", "close": "18:00" },
+    { "day": "Saturday", "open": "09:00", "close": "15:00" }
+  ]
+}
