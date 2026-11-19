@@ -7,6 +7,7 @@ import { nb, routeUrl, site, tel } from "../lib/site";
 import { bookQuery, type BookParams } from "../lib/book";
 import { SERVICE_NAV, SERVICE_PAGES, checklist, sampleReport, type Block, type ServiceSlug } from "../data/services";
 import Art from "../components/Art.astro";
+import { EMAIL_PATTERN, PHONE_PATTERN } from "../lib/forms";
 
 interface Props {
   locale: Locale;
@@ -220,11 +221,11 @@ const others = SERVICE_NAV.filter((n) => n.slug !== slug);
             </div>
             <div class="field">
               <label for="f-email">{t("fleet.form.email")}</label>
-              <input id="f-email" name="email" type="email" autocomplete="email" required />
+              <input id="f-email" name="email" type="email" autocomplete="email" required pattern={EMAIL_PATTERN} />
             </div>
             <div class="field">
               <label for="f-phone">{t("fleet.form.phone")}</label>
-              <input id="f-phone" name="phone" type="tel" autocomplete="tel" />
+              <input id="f-phone" name="phone" type="tel" autocomplete="tel" pattern={PHONE_PATTERN} />
             </div>
             <div class="field">
               <label for="f-size">{t("fleet.form.size")}</label>

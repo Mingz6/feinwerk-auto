@@ -9,6 +9,7 @@ import { MAKES, SERVICES, type Make } from "../lib/book";
 import { formatTime } from "../lib/hours";
 import { routeUrl, site } from "../lib/site";
 import { timesFor } from "../lib/slots";
+import { EMAIL_PATTERN, PHONE_PATTERN } from "../lib/forms";
 
 interface Props {
   locale: Locale;
@@ -108,17 +109,17 @@ const Wrap = inline ? "dialog" : "div";
         </div>
         <div class="field">
           <label for={`${p}-phone`}>{t("book.phone")}</label>
-          <input id={`${p}-phone`} name="phone" type="tel" autocomplete="tel" required pattern="[\d\s()+.\-]{7,}" maxlength="30" />
+          <input id={`${p}-phone`} name="phone" type="tel" autocomplete="tel" required pattern={PHONE_PATTERN} maxlength="30" />
         </div>
         <div class="field">
           <label for={`${p}-email`}>{t("book.email")}</label>
-          <input id={`${p}-email`} name="email" type="email" autocomplete="email" required maxlength="120" />
+          <input id={`${p}-email`} name="email" type="email" autocomplete="email" required pattern={EMAIL_PATTERN} maxlength="120" />
         </div>
         <label class="book-consent">
           <input type="checkbox" name="reminders" value="yes" data-reminders />
           <span>{t("book.reminders", { name: site.name, address, phone: site.phoneDisplay })}</span>
         </label>
-        <p class="svc-small" data-privacy>{t("book.privacy", { phone: site.phoneDisplay })}</p>
+        <p class="svc-small" data-privacy>{t("book.privacy", { phone: site.phoneDisplay })} <a href={routeUrl(locale, "privacy")}>{t("privacy.link")}</a></p>
         <p class="svc-small">{t("book.sent")}</p>
         <p class="book-error" role="alert" data-book-error hidden>{t("book.error", { phone: site.phoneDisplay })}</p>
         <div class="book-nav">
