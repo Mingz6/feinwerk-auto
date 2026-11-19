@@ -95,3 +95,13 @@ PLAN.md's Decisions are settled; they are repeated here so each can be revisited
 - **French layout is a test, not a look.** `tests/e2e/french.spec.ts` opens all 19 French pages at 390 × 844 and 1440 × 900 in both themes and fails on sideways scroll, a clipped or off-screen button, chip or time choice, or a phone number on two lines; it also steps through the booking sheet at 390. The make labels ("Mercedes-Benz · AMG", "Autres européennes") wrap to two lines inside their boxes at 390, the same as English brand names; nothing is cut off.
 - **`pages.spec.ts` now runs.** The e2e project's `testMatch` listed theme, lang, home, services and booking only, so the Phase 2c page tests never ran in CI. They pass; `pages` and `french` are added.
 - **The 404 opens the visitor's language on Enter.** The p2c pre-review found Enter read the match list in its original order, before the visitor's group was moved first; it now takes the first visible match in the document.
+
+## Phase 3b: 简体中文
+
+- **One space between Han and Latin letters or digits** ("温哥华 BMW", "第 1 步", "16,000 公里"), none next to full-width punctuation. The Phase 2 draft already did this; the posts follow it and a dist test fails on half-width punctuation next to a Han character.
+- **Units in characters, brands in Latin.** 毫米 and 公里 rather than mm and km; Mercedes-Benz, not 奔驰, as in every other string. °C, psi and M+S stay as printed on the tire or gauge.
+- **No 经销商 or 4S 店 in the A/B post.** The demo-safety test bans dealer wording in every language, and a Canadian reader wouldn't say 4S 店 anyway. The heading asks about "the brand's own service centre", as the English does.
+- **Reading time counts characters for Chinese**: 400 a minute, beside 200 English words a minute. Splitting on spaces made every Chinese post "1 min".
+- **The Chinese stack reaches mono and display text.** `:lang()` sets `--cjk`, and every `--font-mono` and `--font-display` stack ends with `var(--cjk, …)`. Before, eyebrows, tags, footer titles and the post date fell back to whatever the browser picked. The `:lang()` font-family rules stay, so a 简体中文 link in the menu of an English page still gets its own stack (custom properties resolve where declared, and inherited font-family doesn't re-resolve).
+- **`text-wrap: pretty` on paragraphs and list items; `balance` on the demo strip.** Chinese can break between any two characters, so the home lead left "认。" alone on a line at 1440. Browsers without `pretty` wrap as before.
+- **Layout faults are a shared helper** (`tests/e2e/layout.ts`), so French and Chinese run the same checks; 廣東話 can reuse it in 3c.

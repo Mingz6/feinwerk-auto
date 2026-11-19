@@ -29,6 +29,8 @@
   :lang(zh-Hans) { --cjk: var(--cjk-hans); font-family: var(--font-body), var(--cjk-hans); }
   :lang(zh-HK) { --cjk: var(--cjk-hk); font-family: var(--font-body), var(--cjk-hk); }
   h1, h2, h3 { font-family: var(--font-display), var(--cjk, sans-serif); line-height: 1.12; text-wrap: balance; }
+  /* No one-character last line: Chinese breaks between any two characters, so "确认。" left "认。" alone. */
+  p, li { text-wrap: pretty; }
   :lang(zh-Hans) :is(h1, h2, h3) { font-family: var(--font-display), var(--cjk-hans); }
   :lang(zh-HK) :is(h1, h2, h3) { font-family: var(--font-display), var(--cjk-hk); }
   h1 { font-size: clamp(2.125rem, 8.5vw, 4rem); font-weight: 800; font-stretch: 112%; letter-spacing: -0.015em; }
@@ -62,6 +64,7 @@
   .skip { position: absolute; left: 0.5rem; top: -10rem; z-index: 30; padding: 0.75rem 1rem; background: var(--button); color: var(--button-text); border-radius: var(--radius); }
   .skip:focus { top: 0.5rem; }
 
+  .concept p { text-wrap: balance; }
   .concept { background: var(--surface); border-bottom: var(--hairline) solid var(--line); font-size: 0.8125rem; padding: 0.375rem var(--gutter); text-align: center; }
 
   .eyebrow { font-family: var(--font-mono), var(--cjk, monospace); font-weight: 500; font-size: 0.8125rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); display: flex; flex-wrap: wrap; gap: 0.5rem; }
