@@ -1,0 +1,147 @@
+---
+// The four booking steps and the confirmation. In the sheet (every page but /book/) and inline on /book/.
+// Without JavaScript only /book/ shows it: every step at once, inside an open <dialog> so that
+// method="dialog" closes it on a valid submit, with no request at all, and CSS shows the confirmation.
+import type { Locale } from "../lib/lang";
+import { htmlLang, useI18n } from "../i18n";
+import type { Key } from "../i18n/en";
+import { MAKES, SERVICES, type Make } from "../lib/book";
+import { formatTime } from "../lib/hours";
+import { routeUrl, site } from "../lib/site";
+import { timesFor } from "../lib/slots";
+import { EMAIL_PATTERN, PHONE_PATTERN } from "../lib/forms";
+
+interface Props {
+  locale: Locale;
+  /** Unique id prefix. */
+  prefix: string;
+  /** true on /book/: wrapped in an open dialog for the no-JavaScript submit. */
+  inline?: boolean;
+}
+const { locale, prefix: p, inline = false } = Astro.props;
+const { t } = useI18n(locale);
+const makeLabel: Record<Make, Key> = { "bmw-mini": "make.bmw", "mercedes-amg": "make.mercedes", "vw-audi-porsche": "make.vag", other: "make.other" };
+const address = `${site.address.street}, ${site.address.city}, ${site.address.region}`;
+const fallbackTimes = timesFor(site.hours[1]);
+const Wrap = inline ? "dialog" : "div";
+---
+
+<div class="book-flow" data-book-flow>
+  <Wrap class={inline ? "book-inline" : "book-wrap"} open={inline || undefined} aria-label={inline ? t("book.h1") : undefined}>
+    <form class="book-form" method="dialog" data-book-form aria-label={t("book.h1")}>
+      <p class="book-progress mono" data-js-only data-book-progress aria-live="polite"></p>
+      <fieldset class="book-step" data-step="0">
+        <legend>{`1 · ${t("book.s1")}`}</legend>
+        <fieldset class="book-choices">
+          <legend class="book-label">{t("book.make")}</legend>
+          {
+            MAKES.map((m) => (
+              <label class="choice">
+                <input type="radio" name="make" value={m} required />
+                <span>{t(makeLabel[m])}</span>
+              </label>
+            ))
+          }
+        </fieldset>
+        <div class="field">
+          <label for={`${p}-model`}>{t("book.model")}</label>
+          <input id={`${p}-model`} name="model" type="text" autocomplete="off" maxlength="60" />
+        </div>
+        <div class="book-nav" data-js-only><button class="btn btn-primary" type="button" data-next>{t("book.next")}</button></div>
+      </fieldset>
+      <fieldset class="book-step" data-step="1">
+        <legend>{`2 · ${t("book.s2")}`}</legend>
+        <fieldset class="book-choices">
+          <legend class="book-label">{t("book.service")}</legend>
+          {
+            SERVICES.map((s) => (
+              <label class="choice">
+                <input type="radio" name="service" value={s} required />
+                <span>{t(`book.svc.${s}` as Key)}</span>
+              </label>
+            ))
+          }
+        </fieldset>
+        <div class="field">
+          <label for={`${p}-notes`}>{t("book.notes")}</label>
+          <textarea id={`${p}-notes`} name="notes" rows="3" maxlength="500" autocomplete="off"></textarea>
+        </div>
+        <div class="book-nav" data-js-only>
+          <button class="btn" type="button" data-back>{t("book.back")}</button>
+          <button class="btn btn-primary" type="button" data-next>{t("book.next")}</button>
+        </div>
+      </fieldset>
+      <fieldset class="book-step" data-step="2">
+        <legend>{`3 · ${t("book.s3")}`}</legend>
+        <fieldset class="book-choices book-days" data-js-only>
+          <legend class="book-label">{t("book.day")}</legend>
+          <div class="choices" data-days></div>
+        </fieldset>
+        <fieldset class="book-choices book-times" data-js-only>
+          <legend class="book-label">{t("book.time")}</legend>
+          <div class="choices" data-times></div>
+        </fieldset>
+        <fieldset class="book-fallback" data-nojs>
+          <legend class="vh">{t("book.s3")}</legend>
+          <div class="field">
+            <label for={`${p}-date`}>{t("book.date")}</label>
+            <input id={`${p}-date`} name="date" type="date" required autocomplete="off" />
+          </div>
+          <div class="field">
+            <label for={`${p}-time`}>{t("book.time")}</label>
+            <select id={`${p}-time`} name="time" required autocomplete="off">
+              <option value="">–</option>
+              {fallbackTimes.map((tm) => <option value={tm}>{formatTime(tm, htmlLang[locale])}</option>)}
+            </select>
+          </div>
+          <p class="svc-small">{t("book.nojs.hours")}</p>
+        </fieldset>
+        <div class="book-nav" data-js-only>
+          <button class="btn" type="button" data-back>{t("book.back")}</button>
+          <button class="btn btn-primary" type="button" data-next>{t("book.next")}</button>
+        </div>
+      </fieldset>
+      <fieldset class="book-step" data-step="3">
+        <legend>{`4 · ${t("book.s4")}`}</legend>
+        <div class="field">
+          <label for={`${p}-name`}>{t("book.name")}</label>
+          <input id={`${p}-name`} name="name" type="text" autocomplete="name" required maxlength="80" />
+        </div>
+        <div class="field">
+          <label for={`${p}-phone`}>{t("book.phone")}</label>
+          <input id={`${p}-phone`} name="phone" type="tel" autocomplete="tel" required pattern={PHONE_PATTERN} maxlength="30" />
+        </div>
+        <div class="field">
+          <label for={`${p}-email`}>{t("book.email")}</label>
+          <input id={`${p}-email`} name="email" type="email" autocomplete="email" required pattern={EMAIL_PATTERN} maxlength="120" />
+        </div>
+        <label class="book-consent">
+          <input type="checkbox" name="reminders" value="yes" data-reminders />
+          <span>{t("book.reminders", { name: site.name, address, phone: site.phoneDisplay })}</span>
+        </label>
+        <p class="svc-small" data-privacy>{t("book.privacy", { phone: site.phoneDisplay })} <a href={routeUrl(locale, "privacy")}>{t("privacy.link")}</a></p>
+        <p class="svc-small">{t("book.sent")}</p>
+        <p class="book-error" role="alert" data-book-error hidden>{t("book.error", { phone: site.phoneDisplay })}</p>
+        <div class="book-nav">
+          <button class="btn" type="button" data-back data-js-only>{t("book.back")}</button>
+          <button class="btn btn-primary" type="submit">{t("book.submit")}</button>
+        </div>
+      </fieldset>
+    </form>
+  </Wrap>
+  <section class="book-done card" data-book-done tabindex="-1" aria-labelledby={`${p}-done`}>
+    <h2 id={`${p}-done`}>{t("book.done")}</h2>
+    <p class="book-sent" data-book-sent>{t("book.sent")}</p>
+    <dl class="book-summary" data-js-only>
+      <div><dt>{t("book.done.ref")}</dt><dd class="mono" data-out="reference"></dd></div>
+      <div><dt>{t("book.done.car")}</dt><dd data-out="car"></dd></div>
+      <div><dt>{t("book.done.service")}</dt><dd data-out="service"></dd></div>
+      <div><dt>{t("book.done.when")}</dt><dd data-out="when"></dd></div>
+    </dl>
+    <p class="svc-small" data-nojs>{t("book.nojs.done")}</p>
+    <div class="book-nav">
+      <a class="btn btn-primary" data-ics data-js-only>{t("book.ics")}</a>
+      <a class="btn" href={routeUrl(locale, "book")}>{t("book.again")}</a>
+    </div>
+  </section>
+</div>

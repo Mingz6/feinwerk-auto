@@ -1,0 +1,64 @@
+---
+import Base from "../layouts/Base.astro";
+import type { Locale } from "../lib/lang";
+import { htmlLang, useI18n } from "../i18n";
+import type { Key } from "../i18n/en";
+import { routeUrl, site } from "../lib/site";
+import PageHead from "../components/PageHead.astro";
+
+// Every review here is a sample written for the demo (PLAN.md, Demo safety): labelled on screen and in code.
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const { t } = useI18n(locale);
+const lang = htmlLang[locale];
+const date = new Intl.DateTimeFormat(lang, { dateStyle: "medium", timeZone: "UTC" });
+const one = new Intl.NumberFormat(lang, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const sampleReviews = site.sample.reviews;
+---
+
+<Base locale={locale} route="reviews" title={t("reviews.title", { name: site.name })} description={t("reviews.desc")}>
+  <PageHead eyebrow={t("reviews.eyebrow")} title={t("reviews.h1")} lead={t("reviews.lead")}>
+    <ul class="chips">
+      <li class="chip" data-sample>
+        <span aria-hidden="true">★</span>
+        {t("reviews.avg", { rating: one.format(site.sample.rating), count: sampleReviews.length })}
+        <span class="tag">{t("sample")}</span>
+      </li>
+    </ul>
+  </PageHead>
+
+  <section class="section section-alt" aria-labelledby="list-title">
+    <div class="wrap">
+      <h2 id="list-title" class="vh">{t("reviews.h3")}</h2>
+      <ul class="reviews reviews-all" data-sample>
+        {
+          sampleReviews.map((r, i) => (
+            <li class="card review" data-sample-review>
+              <p class="review-meta">
+                <span class="stars" aria-hidden="true">{"★".repeat(r.rating) + "☆".repeat(5 - r.rating)}</span>
+                <span class="vh">{t("review.stars", { rating: r.rating })}</span>
+                <time class="mono" datetime={r.date}>{date.format(new Date(r.date))}</time>
+              </p>
+              <blockquote><p>{t(`review.${i + 1}.text` as Key)}</p></blockquote>
+              <p class="review-name">{t(`review.${i + 1}.name` as Key)} <span class="tag">{t("sample")}</span></p>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="svc-small">{t("reviews.note")}</p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="next-title">
+    <div class="wrap svc-form-wrap">
+      <h2 id="next-title">{t("reviews.next.h2")}</h2>
+      <p>{t("reviews.next.text")}</p>
+      <div class="actions">
+        <a class="btn btn-primary" href={routeUrl(locale, "book")}>{t("cta.book")}</a>
+        <a class="btn btn-quiet" href={routeUrl(locale, "warranty")}>{t("warranty.more")}</a>
+      </div>
+    </div>
+  </section>
+</Base>

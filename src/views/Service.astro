@@ -1,0 +1,286 @@
+---
+import Base from "../layouts/Base.astro";
+import type { Locale } from "../lib/lang";
+import { htmlLang, useI18n } from "../i18n";
+import type { Key } from "../i18n/en";
+import { nb, routeUrl, site, tel } from "../lib/site";
+import { bookQuery, type BookParams } from "../lib/book";
+import { SERVICE_NAV, SERVICE_PAGES, checklist, sampleReport, type Block, type ServiceSlug } from "../data/services";
+import Art from "../components/Art.astro";
+import { EMAIL_PATTERN, PHONE_PATTERN } from "../lib/forms";
+
+interface Props {
+  locale: Locale;
+  slug: ServiceSlug;
+}
+const { locale, slug } = Astro.props;
+const { t } = useI18n(locale);
+const lang = htmlLang[locale];
+const page = SERVICE_PAGES[slug];
+const k = (s: string) => `${page.key}.${s}` as Key;
+const money = new Intl.NumberFormat(lang, { style: "currency", currency: "CAD", maximumFractionDigits: 0 });
+const num = new Intl.NumberFormat(lang);
+const range = ([lo, hi]: [number, number]) => `${money.format(lo)} – ${money.format(hi)}`;
+const bookHref = (p: BookParams) => `${routeUrl(locale, "book")}${bookQuery(p)}`;
+const name = (b: Block) => b.name ?? t((b.nameKey ?? k(`${b.id}.name`)) as Key);
+const pageBook: BookParams = { make: page.make, service: page.service ?? "diagnosis" };
+const blockBook = (b: Block): BookParams => ({ make: b.make ?? page.make, service: b.service, model: b.kind === "model" ? b.id : undefined });
+const isMakePage = page.lists === SERVICE_PAGES["bmw-mini"].lists;
+const others = SERVICE_NAV.filter((n) => n.slug !== slug);
+---
+
+<Base locale={locale} route={slug} title={t(k("title"), { name: site.name })} description={t(k("desc"))}>
+  <section class="wrap svc-hero" aria-labelledby="svc-title" data-service-page={slug}>
+    <div class="svc-hero-copy">
+      <p class="eyebrow">{t(k("eyebrow"))}</p>
+      <h1 id="svc-title">{t(k("h1"))}</h1>
+      <p class="lead">{t(k("lead"))}</p>
+      <div class="actions">
+        <a class="btn btn-primary" href={bookHref(pageBook)} data-book data-book-make={pageBook.make} data-book-service={pageBook.service}>{slug === "fleet" ? t("fleet.book") : t("cta.book")}</a>
+        <a class="btn btn-quiet" href={`tel:${tel}`}>{nb(t("cta.call", { phone: site.phoneDisplay }))}</a>
+      </div>
+    </div>
+    <div class="svc-visual"><Art name={page.art} /></div>
+  </section>
+
+  {
+    page.blocks.length > 1 && (
+      <nav class="wrap svc-jump" aria-label={t("svc.jump")}>
+        <ul class="chips">
+          {page.blocks.map((b) => (
+            <li>
+              <a class="chip" href={`#${b.id}`}>{name(b)}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )
+  }
+
+  {
+    slug === "tires" && (
+      <section class="section section-alt" aria-labelledby="rules-title">
+        <div class="wrap svc-rules">
+          <h2 id="rules-title">{t("tires.rules.h2")}</h2>
+          <p class="section-lead">{t("tires.rules.lead")}</p>
+          <ul class="svc-ticks">
+            <li>{t("tires.rules.1")}</li>
+            <li>{t("tires.rules.2")}</li>
+            <li>{t("tires.rules.3")}</li>
+          </ul>
+          <p class="svc-small">{t("tires.rules.note")}</p>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    slug === "carplay-retrofit" && (
+      <section class="section section-alt" aria-label={t("carplay.eyebrow")}>
+        <div class="wrap svc-pair">
+          {(["installed", "factory"] as const).map((g) => (
+            <div class="card">
+              <h2>{t(`carplay.${g}` as Key)}</h2>
+              <ul class="svc-ticks">
+                {[1, 2, 3].map((i) => (
+                  <li>{t(`carplay.${g}.${i}` as Key)}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+          <p class="svc-small">{t("carplay.warranty")}</p>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    slug === "pre-purchase-inspection" && (
+      <>
+        <section class="section section-alt" aria-labelledby="list-title">
+          <div class="wrap">
+            <h2 id="list-title">{t("ppi.list.h2")}</h2>
+            <div class="svc-checklist">
+              {checklist.map((g) => (
+                <div class="card">
+                  <h3>{t(`ppi.${g}` as Key)}</h3>
+                  <ul class="svc-ticks">
+                    {[1, 2, 3, 4].map((i) => (
+                      <li>{t(`ppi.${g}.${i}` as Key)}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+        <section class="section garage" aria-labelledby="report-title">
+          <div class="wrap">
+            <h2 id="report-title">{t("ppi.report.h2")}</h2>
+            <p class="section-lead">{t("ppi.report.lead")}</p>
+            <article class="card svc-report" data-sample>
+              <p class="wo-head">
+                <span class="tag">{t("sample")}</span>
+                <span class="mono">{`${sampleReport.car} · ${t("wo.km", { km: num.format(sampleReport.km) })} · ${t("wo.photos", { count: sampleReport.photos })}`}</span>
+              </p>
+              <ul class="svc-report-lines">
+                {sampleReport.lines.map((state, i) => (
+                  <li class={`is-${state}`}>
+                    <span class="svc-state mono">{t(`ppi.report.${state}` as Key)}</span>
+                    <span>{t(`ppi.report.${i + 1}` as Key)}</span>
+                  </li>
+                ))}
+              </ul>
+              <p class="svc-verdict">{t("ppi.report.verdict", { price: range(sampleReport.fixPrice) })}</p>
+            </article>
+          </div>
+        </section>
+      </>
+    )
+  }
+
+  {
+    slug === "fleet" && (
+      <section class="section section-alt" aria-labelledby="perks-title">
+        <div class="wrap">
+          <h2 id="perks-title">{t("fleet.perks.h2")}</h2>
+          <ul class="svc-checklist">
+            {[1, 2, 3, 4].map((i) => (
+              <li class="card">
+                <h3>{t(`fleet.perk.${i}.title` as Key)}</h3>
+                <p>{t(`fleet.perk.${i}.text` as Key)}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    page.blocks.length > 0 && (
+      <section class="section" aria-labelledby="blocks-title">
+        <div class="wrap">
+          <h2 id="blocks-title">{t(k("blocks"))}</h2>
+          <ul class="svc-blocks">
+            {page.blocks.map((b) => {
+              const p = blockBook(b);
+              return (
+                <li class="card svc-block" id={b.id} data-block={b.id} data-block-kind={b.kind}>
+                  <h3>{name(b)}</h3>
+                  <p class="svc-spec mono">{t(k(`${b.id}.spec`))}</p>
+                  {b.models && (
+                    <p class="svc-models">
+                      <span class="svc-label">{t("svc.models")}</span> {b.models}
+                    </p>
+                  )}
+                  {page.lists.map((l) => (
+                    <div class="svc-list">
+                      <h4 class="svc-label">{t(l.label as Key)}</h4>
+                      <ul>
+                        {l.items.map((i) => (
+                          <li>{t(k(`${b.id}.${i}`))}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                  <p class="svc-price" data-sample-price>
+                    <span class="svc-label">{t("svc.range")}</span>
+                    <span class="svc-job">{t(k(`${b.id}.job`))}</span>
+                    <span class="svc-amount mono">{range(b.samplePrice)}</span>
+                    <span class="tag">{t("sample")}</span>
+                  </p>
+                  <a class="btn btn-primary" href={bookHref(p)} data-book data-book-make={p.make} data-book-service={p.service} data-book-model={p.model}>
+                    {t("svc.book")}
+                    <span class="vh">{`: ${name(b)}`}</span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+          <p class="svc-small">{t("svc.note")}</p>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    slug === "fleet" && (
+      <section class="section" aria-labelledby="form-title">
+        <div class="wrap svc-form-wrap">
+          <h2 id="form-title">{t("fleet.form.h2")}</h2>
+          <p class="section-lead">{t("fleet.form.lead")}</p>
+          <form class="card svc-form" method="dialog" data-demo-form>
+            <div class="field">
+              <label for="f-company">{t("fleet.form.company")}</label>
+              <input id="f-company" name="company" type="text" autocomplete="organization" required />
+            </div>
+            <div class="field">
+              <label for="f-name">{t("fleet.form.name")}</label>
+              <input id="f-name" name="name" type="text" autocomplete="name" required />
+            </div>
+            <div class="field">
+              <label for="f-email">{t("fleet.form.email")}</label>
+              <input id="f-email" name="email" type="email" autocomplete="email" required pattern={EMAIL_PATTERN} />
+            </div>
+            <div class="field">
+              <label for="f-phone">{t("fleet.form.phone")}</label>
+              <input id="f-phone" name="phone" type="tel" autocomplete="tel" pattern={PHONE_PATTERN} />
+            </div>
+            <div class="field">
+              <label for="f-size">{t("fleet.form.size")}</label>
+              <select id="f-size" name="size" autocomplete="off">
+                <option value="2-5">{t("fleet.form.size.small")}</option>
+                <option value="6-15">{t("fleet.form.size.mid")}</option>
+                <option value="16+">{t("fleet.form.size.large")}</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="f-makes">{t("fleet.form.makes")}</label>
+              <textarea id="f-makes" name="makes" rows="3" autocomplete="off"></textarea>
+            </div>
+            <p class="svc-small">{t("fleet.form.privacy")}</p>
+            <p class="svc-small">{t("book.demo")}</p>
+            <noscript>
+              <p class="svc-small">{t("fleet.form.nojs", { phone: site.phoneDisplay })}</p>
+            </noscript>
+            <button class="btn btn-primary" type="submit">{t("fleet.form.submit")}</button>
+          </form>
+          <div class="card svc-sent" data-demo-sent hidden tabindex="-1">
+            <h3>{t("fleet.form.sent")}</h3>
+            <p>{t("book.demo")}</p>
+            <p>{t("fleet.form.sent.text")}</p>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section section-alt" aria-labelledby="more-title">
+    <div class="wrap svc-more">
+      {
+        isMakePage && (
+          <div>
+            <h2>{t("svc.other.h2")}</h2>
+            <p>{t("svc.other.text")}</p>
+            <p>
+              <a class="btn btn-primary" href={bookHref({ make: page.make, service: "diagnosis" })} data-book data-book-make={page.make} data-book-service="diagnosis">
+                {t("svc.other.cta")}
+              </a>
+            </p>
+          </div>
+        )
+      }
+      <nav aria-labelledby="more-title">
+        <h2 id="more-title">{t("svc.more")}</h2>
+        <ul class="svc-links">
+          {others.map((n) => (
+            <li>
+              <a href={routeUrl(locale, n.slug)}>{t(n.label as Key)}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  </section>
+</Base>
