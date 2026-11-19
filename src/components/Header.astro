@@ -5,9 +5,11 @@ import { nb, routeUrl, site, tel, type Route } from "../lib/site";
 
 interface Props {
   locale: Locale;
-  route: Route;
+  /** Absent on the 404: no page is current there. */
+  route?: Route;
 }
 const { locale, route } = Astro.props;
+const linkRoute: Route = route ?? "";
 const { t } = useI18n(locale);
 ---
 
@@ -35,7 +37,7 @@ const { t } = useI18n(locale);
           {
             LOCALES.map((l) => (
               <li>
-                <a href={routeUrl(l, route)} lang={htmlLang[l]} hreflang={hreflang[l]} data-set-lang={l} aria-current={l === locale ? "true" : undefined}>
+                <a href={routeUrl(l, linkRoute)} lang={htmlLang[l]} hreflang={hreflang[l]} data-set-lang={l} aria-current={l === locale ? "true" : undefined}>
                   {langName[l]}
                 </a>
               </li>

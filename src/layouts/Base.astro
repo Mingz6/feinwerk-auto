@@ -76,7 +76,7 @@ location.replace(base+"/"+prefix+location.pathname.slice(base.length).replace(/^
     <aside class="concept" data-concept aria-label={t("strip.label")}>
       <p><strong>{t("strip.label")}</strong> · {t("strip.text")}</p>
     </aside>
-    <Header locale={locale} route={route} />
+    <Header locale={locale} route={notFound ? undefined : route} />
     <main id="main">
       <slot />
     </main>
