@@ -1,5 +1,6 @@
 import type { ClientStrings } from "../i18n";
 import { describeStatus, getStatus, zonedNow } from "../lib/hours";
+import { booking } from "./booking";
 
 const strings: ClientStrings = JSON.parse(document.getElementById("i18n")!.textContent!);
 const root = document.documentElement;
@@ -124,3 +125,4 @@ theme();
 menus();
 shopStatus();
 demoForms();
+booking(strings);

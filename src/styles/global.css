@@ -106,7 +106,7 @@
     display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
     min-height: 48px; padding: 0.625rem 1.125rem;
     border: var(--hairline) solid var(--text); border-radius: var(--radius);
-    color: var(--text); font-weight: 600; text-decoration: none; white-space: nowrap;
+    background: none; color: var(--text); font-weight: 600; text-decoration: none; white-space: nowrap;
   }
   .btn:hover { background: var(--surface); }
   .btn-primary { background: var(--button); border-color: var(--button); color: var(--button-text); }
@@ -386,4 +386,61 @@
   .svc-more h2 { font-size: 1.25rem; }
   .svc-links { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.25rem; }
   .svc-links a { display: inline-flex; align-items: center; min-height: var(--tap); }
+}
+
+/* Booking flow (Phase 2b): the sheet on every page and the /book/ page */
+@layer components {
+  html:not(.js) [data-js-only], .js [data-nojs] { display: none; }
+  .book-page { display: grid; gap: 1rem; padding-block: 2rem 3rem; max-width: 44rem; }
+  .book-page .lead { color: var(--muted); }
+  .book-inline { position: static; display: block; width: 100%; max-width: none; margin: 0; padding: 0; border: 0; background: none; color: inherit; }
+  .book-inline:not([open]) { display: none; }
+  .book-form { display: grid; gap: 1.5rem; }
+  .book-form fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+  .book-step { display: grid; gap: 1rem; }
+  .book-step[hidden] { display: none; }
+  .book-step > legend { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; margin-bottom: 0.75rem; }
+  .book-progress { font-size: 0.8125rem; color: var(--muted); }
+  .book-label { font-weight: 600; margin-bottom: 0.5rem; }
+  .book-choices, .book-choices .choices { display: grid; gap: 0.5rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 10rem), 1fr)); }
+  .book-choices > legend { grid-column: 1 / -1; }
+  .book-days .choices, .book-times .choices { grid-column: 1 / -1; grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr)); }
+  /* Day and time chips: the radio stays in the form and takes focus, the chip shows its state. */
+  .choices .choice { justify-content: center; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .choices .choice input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .choices .choice:has(input:checked) { background: var(--button); border-color: var(--button); color: var(--button-text); box-shadow: none; }
+  .choices .choice { position: relative; }
+  .choice { display: flex; align-items: center; gap: 0.5rem; min-height: var(--tap); padding: 0.5rem 0.75rem; border: var(--hairline) solid var(--line); border-radius: var(--radius); background: var(--bg); cursor: pointer; }
+  .choice:has(input:checked) { border-color: var(--link); box-shadow: inset 0 0 0 1px var(--link); }
+  .choice:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .choice input, .book-consent input { flex: none; width: 1.125rem; height: 1.125rem; margin: 0; accent-color: var(--button); }
+  .book-fallback { display: grid; gap: 1rem; }
+  .book-consent { display: flex; gap: 0.625rem; align-items: start; min-height: var(--tap); cursor: pointer; }
+  .book-consent input { margin-top: 0.2rem; }
+  .book-nav { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .book-error { color: var(--text); font-weight: 600; border-inline-start: 3px solid var(--link); padding-inline-start: 0.75rem; }
+  .book-done { display: none; gap: 1rem; }
+  .book-done:focus { outline: 2px solid var(--focus); outline-offset: 2px; }
+  [data-book-flow][data-done] .book-done, .book-inline:not([open]) + .book-done { display: grid; }
+  [data-book-flow][data-done] :is(.book-wrap, .book-inline) { display: none; }
+  .book-sent { font-weight: 700; }
+  .book-summary { display: grid; gap: 0.5rem; }
+  .book-summary div { display: grid; grid-template-columns: 7rem 1fr; gap: 0.75rem; }
+  .book-summary dt { color: var(--muted); }
+  .book-summary dd { margin: 0; }
+
+  .sheet { inset: auto 0 0; width: 100%; max-width: none; max-height: 92dvh; margin: 0; padding: 0 0 env(safe-area-inset-bottom); border: 0; border-radius: 12px 12px 0 0; background: var(--bg); color: var(--text); overflow: auto; overscroll-behavior: contain; translate: 0 0; opacity: 1; transition: translate 0.25s ease-out, opacity 0.25s ease-out; }
+  @starting-style { .sheet[open] { translate: 0 2rem; opacity: 0; } }
+  .sheet::backdrop { background: rgb(0 0 0 / 0.55); }
+  .sheet-head { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.5rem 0.5rem 0.5rem 1rem; background: var(--bg); border-bottom: var(--hairline) solid var(--line); }
+  .sheet-head h2 { font-size: 1.125rem; }
+  .sheet-close { display: inline-grid; place-items: center; width: var(--tap); height: var(--tap); border: 0; border-radius: var(--radius); background: none; cursor: pointer; }
+  .sheet-close:hover { background: var(--surface); }
+  .sheet .book-flow { padding: 1rem 1rem 1.5rem; }
+  html:has(.sheet[open]) { overflow: hidden; }
+  @media (min-width: 48rem) {
+    .sheet { inset: 0; margin: auto; width: min(40rem, 100% - 2rem); max-height: 88dvh; border: var(--hairline) solid var(--line); border-radius: var(--radius); }
+  }
+  @media (prefers-reduced-motion: reduce) { .sheet { transition: none; } }
+  @media print { .sheet:not([open]), .book-nav, .sheet-head button { display: none; } }
 }

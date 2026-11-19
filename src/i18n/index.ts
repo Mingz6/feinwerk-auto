@@ -41,6 +41,13 @@ export const clientStrings = (locale: Locale) => {
       opensDay: d["status.opensDay"],
     },
     shop: { hours: site.hours, timeZone: site.timeZone },
+    book: {
+      step: d["book.step"],
+      ics: d["book.ics.summary"],
+      sent: d["book.sent"],
+      name: site.name,
+      address: `${site.address.street}, ${site.address.city}, ${site.address.region}`,
+    },
   };
 };
 export type ClientStrings = ReturnType<typeof clientStrings>;

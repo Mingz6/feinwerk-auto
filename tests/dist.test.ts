@@ -3,6 +3,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
+import { gzipSync } from "node:zlib";
 import { en } from "../src/i18n/en.ts";
 import { fr } from "../src/i18n/fr.ts";
 import { zhHans } from "../src/i18n/zh-hans.ts";
@@ -145,3 +146,56 @@ test("no 'authorized' or 'dealer' wording on any page, in any language", () => {
     assert.equal(hit, null, `${relative(DIST, file)}: "${hit?.[0]}"`);
   }
 });
+
+// Phase 2b: the booking flow. PLAN.md: page JavaScript under 15 KB gzipped; BC PIPA s.10 and CASL on the form.
+const JS_BUDGET = 15 * 1024;
+const gz = (s: string | Buffer) => gzipSync(s, { level: 9 }).length;
+/** A module and everything it imports, each file once. */
+const moduleFiles = (src: string, seen = new Set<string>()): Set<string> => {
+  const file = join(DIST, src.replace(BASE, ""));
+  if (seen.has(file)) return seen;
+  seen.add(file);
+  const code = readFileSync(file, "utf8");
+  for (const m of code.matchAll(/(?:from|import)\s*["'](\.{1,2}\/[^"']+\.js)["']/g)) moduleFiles(join(BASE, relative(DIST, join(file, "..", m[1]))), seen);
+  return seen;
+};
+const pageJs = (html: string) => {
+  const inline = [...html.matchAll(/<script\b(?![^>]*\bsrc=)(?![^>]*application\/json)[^>]*>([\s\S]*?)<\/script>/g)].reduce((n, m) => n + gz(m[1]), 0);
+  const files = new Set<string>();
+  for (const m of html.matchAll(/<script\b[^>]*\bsrc="([^"]+)"/g)) moduleFiles(m[1], files);
+  return inline + [...files].reduce((n, f) => n + gz(readFileSync(f)), 0);
+};
+
+test(`every page ships under ${JS_BUDGET / 1024} KB of JavaScript, gzipped`, () => {
+  const sizes = pages.map((f) => [relative(DIST, f), pageJs(readFileSync(f, "utf8"))] as const).sort((a, b) => b[1] - a[1]);
+  console.log(`page JavaScript, gzipped: largest ${sizes[0][0]} ${(sizes[0][1] / 1024).toFixed(1)} KB, smallest ${sizes.at(-1)![0]} ${(sizes.at(-1)![1] / 1024).toFixed(1)} KB`);
+  for (const [name, size] of sizes) assert.ok(size < JS_BUDGET, `${name}: ${size} bytes`);
+});
+
+const consentWord: Record<string, string> = { "en-CA": "unsubscribe", "fr-CA": "désabonner", "zh-Hans": "退订", "zh-HK": "取消訂閱" };
+for (const file of pages) {
+  const name = relative(DIST, file).replaceAll("\\", "/");
+  const html = readFileSync(file, "utf8");
+  const lang = html.match(/<html[^>]*\blang="([^"]+)"/)?.[1] ?? "";
+  const isBook = /^((fr|zh-hans|zh-hk)\/)?book\/index\.html$/.test(name);
+
+  test(`${name}: one booking flow, ${isBook ? "inline on the page" : "in the sheet"}`, () => {
+    assert.equal([...html.matchAll(/data-book-flow/g)].length, 1);
+    assert.equal(html.includes("data-book-sheet"), !isBook);
+    if (isBook) assert.match(html, /<dialog\b[^>]*class="book-inline"[^>]*\bopen\b/);
+    assert.match(html, /<form\b[^>]*method="dialog"[^>]*data-book-form/, "the form can't submit anywhere");
+    assert.doesNotMatch(html.match(/<form\b[^>]*data-book-form[^>]*>/)![0], /\saction=/);
+  });
+
+  test(`${name}: reminders box unticked, with identity, contact and unsubscribe (CASL); privacy purpose and contact (PIPA s.10)`, () => {
+    const box = html.match(/<input\b[^>]*name="reminders"[^>]*>/)?.[0] ?? "";
+    assert.ok(box, "no reminders box");
+    assert.doesNotMatch(box, /\schecked\b/);
+    assert.doesNotMatch(box, /\srequired\b/);
+    const label = decode(html.match(/<label class="book-consent">([\s\S]*?)<\/label>/)?.[1].replace(/<[^>]*>/g, "") ?? "");
+    for (const part of ["Feinwerk Auto", "88 Sample Way", "604-555-0148", consentWord[lang]]) assert.ok(label.includes(part), `${part} in "${label}"`);
+    const privacy = decode(html.match(/<p\b[^>]*data-privacy[^>]*>([\s\S]*?)<\/p>/)?.[1] ?? "");
+    assert.ok(privacy.includes("604-555-0148"), "privacy contact");
+    assert.ok(html.indexOf("data-privacy") > html.indexOf('name="email"'), "the privacy line sits under the fields");
+  });
+}
