@@ -148,6 +148,7 @@
   .hero-grid { display: grid; gap: 1.75rem; }
   .hero-visual { position: relative; display: grid; }
   .hero-visual .photo-slot { aspect-ratio: 16 / 9; }
+  .hero-visual .slot-label { bottom: auto; top: 0.375rem; }
 
   .hero-full { position: relative; isolation: isolate; padding-block: 0 2.5rem; overflow: hidden; }
   .hero-bleed { margin: 0; position: relative; aspect-ratio: 16 / 9; display: grid; place-items: center; color: var(--muted); border-bottom: var(--hairline) solid var(--line); }

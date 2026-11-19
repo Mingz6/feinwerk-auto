@@ -47,7 +47,7 @@ test.describe("open/closed chip on the Vancouver clock", () => {
   test("Sat 14:59 PDT (Sunday morning in Tokyo): open, closes 3:00 p.m., Saturday highlighted", async ({ page }) => {
     await page.clock.install({ time: new Date("2026-10-31T21:59:00Z") });
     await page.goto("./");
-    await expect(page.locator("[data-status]")).toHaveText(/^Open · closes 3:00\sp\.m\.$/);
+    await expect(page.locator("[data-status]")).toHaveText(/^Open\s?· closes 3:00\sp\.m\.$/);
     await expect(page.locator("[data-status]")).toHaveAttribute("data-state", "open");
     await expect(page.locator('tr[data-weekday="6"]')).toHaveAttribute("aria-current", "date");
     await expect(page.locator('tr[aria-current="date"]')).toHaveCount(1);
@@ -56,7 +56,7 @@ test.describe("open/closed chip on the Vancouver clock", () => {
   test("first Monday after daylight saving ends (3 Nov 2025), 07:59 PST: closed, opens 8:00 a.m.", async ({ page }) => {
     await page.clock.install({ time: new Date("2025-11-03T15:59:00Z") });
     await page.goto("./");
-    await expect(page.locator("[data-status]")).toHaveText(/^Closed · opens 8:00\sa\.m\.$/);
+    await expect(page.locator("[data-status]")).toHaveText(/^Closed\s?· opens 8:00\sa\.m\.$/);
     await expect(page.locator('tr[data-weekday="1"]')).toHaveAttribute("aria-current", "date");
   });
 });

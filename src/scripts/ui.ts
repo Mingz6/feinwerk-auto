@@ -90,7 +90,7 @@ const shopStatus = () => {
     chips.forEach((c) => {
       c.dataset.state = s.open ? "open" : "closed";
       c.querySelector("[data-status-label]")!.textContent = label;
-      c.querySelector("[data-status-detail]")!.textContent = ` · ${detail}`;
+      c.querySelector("[data-status-detail]")!.textContent = `· ${detail}`;
     });
     const { weekday } = zonedNow(now, timeZone);
     today.forEach((row) => {

@@ -19,7 +19,6 @@
     --line: oklch(0.88 0.008 260); /* hairlines, decorative only */
     --focus: var(--link);
     --ok: oklch(0.55 0.14 150); /* open dot, decorative: the word says it */
-    --surface-2: oklch(0.925 0.008 260);
     /* --signal (amber) is for dark surfaces only: the dark theme and .garage bands. */
 
     /* --font-display, --font-body and --font-mono come from Astro's Fonts API (astro.config.mjs), self-hosted with metric-matched fallbacks. */
@@ -45,7 +44,6 @@
       --button-text: #fff;
       --line: oklch(0.3 0.014 260);
       --ok: oklch(0.78 0.15 150);
-      --surface-2: oklch(0.26 0.014 260);
       --signal: oklch(0.8 0.16 75); /* #F9AD26 amber, 9.1:1 on surface */
     }
   }
@@ -62,7 +60,6 @@
     --button-text: #fff;
     --line: oklch(0.3 0.014 260);
     --ok: oklch(0.78 0.15 150);
-    --surface-2: oklch(0.26 0.014 260);
     --signal: oklch(0.8 0.16 75); /* #F9AD26 amber, 9.1:1 on surface */
   }
 

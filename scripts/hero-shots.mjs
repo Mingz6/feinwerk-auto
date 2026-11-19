@@ -23,6 +23,10 @@ const up = async () => {
 
 for (const hero of ["full", "split"]) {
   execSync("npx astro build", { stdio: "ignore", env: { ...process.env, PUBLIC_HERO: hero } });
+  // Astro 7 runs one preview per project in the background locally; stop it so this one gets PORT.
+  try {
+    execSync("npx astro preview stop", { stdio: "ignore" });
+  } catch {}
   const server = spawn("npx", ["astro", "preview", "--port", String(PORT)], { stdio: "ignore" });
   try {
     await up();
