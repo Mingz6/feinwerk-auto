@@ -1,4 +1,5 @@
 import type { Locale } from "../lib/lang";
+import { site } from "../lib/site";
 import { en, type Dict, type Key } from "./en";
 import { fr } from "./fr";
 import { zhHans } from "./zh-hans";
@@ -28,6 +29,18 @@ export const langShort: Record<Locale, string> = { en: "EN", fr: "FR", "zh-hans"
 /** The few strings the browser script needs, sent as JSON in the page. */
 export const clientStrings = (locale: Locale) => {
   const d = dictionaries[locale];
-  return { theme: { label: d["theme.label"], auto: d["theme.auto"], light: d["theme.light"], dark: d["theme.dark"] } };
+  return {
+    lang: htmlLang[locale],
+    theme: { label: d["theme.label"], auto: d["theme.auto"], light: d["theme.light"], dark: d["theme.dark"] },
+    status: {
+      open: d["status.open"],
+      closed: d["status.closed"],
+      closes: d["status.closes"],
+      opensToday: d["status.opensToday"],
+      opensTomorrow: d["status.opensTomorrow"],
+      opensDay: d["status.opensDay"],
+    },
+    shop: { hours: site.hours, timeZone: site.timeZone },
+  };
 };
 export type ClientStrings = ReturnType<typeof clientStrings>;

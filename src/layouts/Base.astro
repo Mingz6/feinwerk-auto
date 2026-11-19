@@ -5,6 +5,8 @@ import { clientStrings, hreflang, htmlLang, ogLocale, useI18n } from "../i18n";
 import { assetUrl, pathPrefix, routeUrl, site, siteBase, type Route } from "../lib/site";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import BottomBar from "../components/BottomBar.astro";
+import { Font, fontData } from "astro:assets";
 
 interface Props {
   locale: Locale;
@@ -17,6 +19,9 @@ interface Props {
 
 const { locale, route, title, description, notFound = false } = Astro.props;
 const { t } = useI18n(locale);
+// Preload only the latin files of the headline and body faces (the first variant in astro.config.mjs).
+// <Font preload> can't filter local variants by subset, and latin-ext would add about 170 KB the English page never uses.
+const preloads = (["--font-display", "--font-body"] as const).map((v) => fontData[v][0].src[0].url);
 const abs = (path: string) => new URL(path, Astro.site).href;
 
 // Same values as --bg in src/styles/tokens.css.
@@ -50,6 +55,10 @@ location.replace(base+"/"+prefix+location.pathname.slice(base.length).replace(/^
     <meta name="theme-color" content={THEME_COLOR.dark} media="(prefers-color-scheme: dark)" />
     <script is:inline set:html={themeScript} />
     {locale === "en" && !notFound && <script is:inline set:html={langScript} />}
+    <Font cssVariable="--font-display" />
+    <Font cssVariable="--font-body" />
+    <Font cssVariable="--font-mono" />
+    {preloads.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="icon" href={assetUrl("favicon.svg")} type="image/svg+xml" />
@@ -81,6 +90,7 @@ location.replace(base+"/"+prefix+location.pathname.slice(base.length).replace(/^
       <slot />
     </main>
     <Footer locale={locale} />
+    <BottomBar locale={locale} />
     <script is:inline id="i18n" type="application/json" set:html={JSON.stringify(clientStrings(locale))} />
     <script>
       import "../scripts/ui";

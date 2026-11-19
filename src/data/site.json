@@ -10,12 +10,84 @@
   },
   "timeZone": "America/Vancouver",
   "hours": [
-    { "day": "Sunday", "open": null, "close": null },
-    { "day": "Monday", "open": "08:00", "close": "18:00" },
-    { "day": "Tuesday", "open": "08:00", "close": "18:00" },
-    { "day": "Wednesday", "open": "08:00", "close": "18:00" },
-    { "day": "Thursday", "open": "08:00", "close": "18:00" },
-    { "day": "Friday", "open": "08:00", "close": "18:00" },
-    { "day": "Saturday", "open": "09:00", "close": "15:00" }
-  ]
+    {
+      "day": "Sunday",
+      "open": null,
+      "close": null
+    },
+    {
+      "day": "Monday",
+      "open": "08:00",
+      "close": "18:00"
+    },
+    {
+      "day": "Tuesday",
+      "open": "08:00",
+      "close": "18:00"
+    },
+    {
+      "day": "Wednesday",
+      "open": "08:00",
+      "close": "18:00"
+    },
+    {
+      "day": "Thursday",
+      "open": "08:00",
+      "close": "18:00"
+    },
+    {
+      "day": "Friday",
+      "open": "08:00",
+      "close": "18:00"
+    },
+    {
+      "day": "Saturday",
+      "open": "09:00",
+      "close": "15:00"
+    }
+  ],
+  "mapsUrl": "",
+  "sample": {
+    "rating": 4.8,
+    "laborRate": 165,
+    "workOrder": {
+      "number": "FW-0142",
+      "car": "2019 BMW 330i",
+      "km": 84210,
+      "prices": [
+        412,
+        129,
+        286
+      ],
+      "photos": 3
+    },
+    "reviews": [
+      {
+        "date": "2026-10-14",
+        "rating": 5
+      },
+      {
+        "date": "2026-09-02",
+        "rating": 5
+      },
+      {
+        "date": "2026-07-21",
+        "rating": 4
+      }
+    ],
+    "posts": [
+      {
+        "date": "2026-10-28",
+        "minutes": 6
+      },
+      {
+        "date": "2026-10-05",
+        "minutes": 4
+      },
+      {
+        "date": "2026-09-15",
+        "minutes": 5
+      }
+    ]
+  }
 }

@@ -11,29 +11,38 @@ interface Props {
 const { locale, route } = Astro.props;
 const linkRoute: Route = route ?? "";
 const { t } = useI18n(locale);
+const home = routeUrl(locale);
+// Phase 2 points these at the real pages (Services menu by make, Blog, About, Reviews).
+const links = [
+  { href: `${home}#makes`, label: t("nav.services") },
+  { href: `${home}#how`, label: t("nav.how") },
+  { href: `${home}#proof`, label: t("nav.reviews") },
+  { href: `${home}#visit`, label: t("nav.visit") },
+];
+const bookCurrent = route === "book" ? "page" : undefined;
 ---
 
 <header class="header">
   <div class="wrap header-row">
-    <a class="brand" href={routeUrl(locale)}>
+    <a class="brand" href={home} aria-current={route === "" ? "page" : undefined}>
       <span class="brand-name" lang="en">{site.name}</span>
       <span class="brand-desc">{t("brand.descriptor")}</span>
     </a>
 
     <nav class="header-nav" aria-label={t("nav.primary")}>
-      <a href={routeUrl(locale)} aria-current={route === "" ? "page" : undefined}>{t("nav.home")}</a>
-      <a href={routeUrl(locale, "book")} aria-current={route === "book" ? "page" : undefined}>{t("nav.book")}</a>
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+      <a class="btn btn-primary btn-sm" href={routeUrl(locale, "book")} aria-current={bookCurrent}>{t("nav.book")}</a>
     </nav>
 
     <div class="header-tools">
-      <details class="lang-menu" data-lang-menu>
+      <details class="menu lang-menu" data-lang-menu data-menu>
         <summary>
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
             <circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.6 2.6 4 5.6 4 9s-1.4 6.4-4 9c-2.6-2.6-4-5.6-4-9s1.4-6.4 4-9Z"></path>
           </svg>
           <span class="vh">{`${t("lang.label")}: `}</span><span>{langShort[locale]}</span>
         </summary>
-        <ul>
+        <ul class="menu-panel">
           {
             LOCALES.map((l) => (
               <li>
@@ -58,7 +67,18 @@ const { t } = useI18n(locale);
         </svg>
       </button>
 
-      <a class="phone" href={`tel:${tel}`}>{nb(site.phoneDisplay)}</a>
+      <a class="phone header-phone" href={`tel:${tel}`}>{nb(site.phoneDisplay)}</a>
+
+      <details class="menu nav-menu" data-menu>
+        <summary>
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+          <span class="vh">{t("nav.menu")}</span>
+        </summary>
+        <nav class="menu-panel" aria-label={t("nav.menu")}>
+          {links.map((l) => <a href={l.href}>{l.label}</a>)}
+          <a href={routeUrl(locale, "book")} aria-current={bookCurrent}>{t("nav.book")}</a>
+        </nav>
+      </details>
     </div>
   </div>
 </header>

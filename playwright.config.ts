@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const PORT = 4321;
+// PW_PORT picks another port when 4321 is taken (another checkout's preview would otherwise be reused).
+const PORT = Number(process.env.PW_PORT ?? 4321);
 
 export default defineConfig({
   testDir: "tests/e2e",
@@ -13,7 +14,7 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   projects: [
-    { name: "e2e", testMatch: /(theme|lang)\.spec\.ts/, use: { ...devices["Desktop Chrome"] } },
+    { name: "e2e", testMatch: /(theme|lang|home)\.spec\.ts/, use: { ...devices["Desktop Chrome"] } },
     { name: "axe", testMatch: /a11y\.spec\.ts/, use: { ...devices["Desktop Chrome"] } },
   ],
   webServer: {

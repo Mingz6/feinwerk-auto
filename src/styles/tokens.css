@@ -18,11 +18,11 @@
     --button-text: #fff;
     --line: oklch(0.88 0.008 260); /* hairlines, decorative only */
     --focus: var(--link);
+    --ok: oklch(0.55 0.14 150); /* open dot, decorative: the word says it */
+    --surface-2: oklch(0.925 0.008 260);
     /* --signal (amber) is for dark surfaces only: the dark theme and .garage bands. */
 
-    --font-display: "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    /* --font-display, --font-body and --font-mono come from Astro's Fonts API (astro.config.mjs), self-hosted with metric-matched fallbacks. */
     --cjk-hans: "PingFang SC", "Noto Sans CJK SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
     --cjk-hk: "PingFang HK", "PingFang TC", "Noto Sans CJK HK", "Noto Sans CJK TC", "Noto Sans HK", "Microsoft JhengHei", sans-serif;
 
@@ -44,6 +44,8 @@
       --button: #2d5ed4; /* white text 5.7:1 */
       --button-text: #fff;
       --line: oklch(0.3 0.014 260);
+      --ok: oklch(0.78 0.15 150);
+      --surface-2: oklch(0.26 0.014 260);
       --signal: oklch(0.8 0.16 75); /* #F9AD26 amber, 9.1:1 on surface */
     }
   }
@@ -59,6 +61,8 @@
     --button: #2d5ed4; /* white text 5.7:1 */
     --button-text: #fff;
     --line: oklch(0.3 0.014 260);
+    --ok: oklch(0.78 0.15 150);
+    --surface-2: oklch(0.26 0.014 260);
     --signal: oklch(0.8 0.16 75); /* #F9AD26 amber, 9.1:1 on surface */
   }
 

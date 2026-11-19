@@ -9,3 +9,4 @@ src/data/site.private.json
 test-results/
 playwright-report/
 .lighthouseci/
+shots/
