@@ -1,0 +1,57 @@
+---
+import type { Locale } from "../lib/lang";
+import { htmlLang, useI18n } from "../i18n";
+import { routeUrl, site } from "../lib/site";
+import { formatTime, weekdayName } from "../lib/hours";
+import Art from "./Art.astro";
+
+// The Visit block: drawn map, address, hours with today highlighted, entrance. Home and Contact.
+interface Props {
+  locale: Locale;
+  /** Home links to the contact page; Contact doesn't link to itself. */
+  more?: boolean;
+}
+const { locale, more = false } = Astro.props;
+const { t } = useI18n(locale);
+const lang = htmlLang[locale];
+const { street, city, region } = site.address;
+const week = [1, 2, 3, 4, 5, 6, 0].map((w) => ({ w, ...site.hours[w] }));
+---
+
+  <section id="visit" class="section" aria-labelledby="visit-title" data-section="visit">
+    <div class="wrap visit-grid">
+      <div>
+        <p class="eyebrow">{t("visit.eyebrow")}</p>
+        <h2 id="visit-title">{t("visit.h2")}</h2>
+        <figure class="map">
+          <Art name="map" />
+          <figcaption><span class="tag">{t("sample")}</span> {t("visit.map")}</figcaption>
+        </figure>
+      </div>
+      <div class="visit-info">
+        <h3>{t("visit.address")}</h3>
+        <p>{`${street}, ${city}, ${region}`}</p>
+        {site.mapsUrl && <p><a href={site.mapsUrl}>{t("visit.directions")}</a></p>}
+        <h3>{t("visit.hours")}</h3>
+        <table class="hours">
+          <caption class="vh">{t("visit.hours")}</caption>
+          <tbody>
+            {
+              week.map((d) => (
+                <tr data-weekday={d.w}>
+                  <th scope="row">
+                    {weekdayName(d.w, lang)}
+                    <span class="today-tag" hidden>{t("visit.today")}</span>
+                  </th>
+                  <td class="mono">{d.open && d.close ? `${formatTime(d.open, lang)} – ${formatTime(d.close, lang)}` : t("visit.closed")}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+        <h3>{t("visit.entrance")}</h3>
+        <p>{t("visit.entrance.text")}</p>
+        {more && <p><a href={routeUrl(locale, "contact")}>{t("visit.more")}</a></p>}
+      </div>
+    </div>
+  </section>

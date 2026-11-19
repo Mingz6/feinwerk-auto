@@ -1,0 +1,57 @@
+---
+import Base from "../layouts/Base.astro";
+import type { Locale } from "../lib/lang";
+import { useI18n } from "../i18n";
+import type { Key } from "../i18n/en";
+import { nb, routeUrl, site, tel } from "../lib/site";
+import PageHead from "../components/PageHead.astro";
+
+// Sample terms (PLAN.md: 12-month parts and labour). Labelled Sample on screen.
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const { t } = useI18n(locale);
+const lists = [
+  { id: "covered", n: 3 },
+  { id: "not", n: 4 },
+] as const;
+---
+
+<Base locale={locale} route="warranty" title={t("warranty.page.title", { name: site.name })} description={t("warranty.page.desc")}>
+  <PageHead eyebrow={t("warranty.page.eyebrow")} title={t("warranty.page.h1")} lead={t("warranty.page.lead")} art="brake">
+    <p><span class="tag" data-sample>{t("sample")}</span> {t("warranty.page.note")}</p>
+  </PageHead>
+
+  <section class="section section-alt" aria-label={t("warranty.page.eyebrow")}>
+    <div class="wrap svc-pair">
+      {
+        lists.map((l) => (
+          <div class="card">
+            <h2>{t(`warranty.${l.id}.h2` as Key)}</h2>
+            <ul class="svc-ticks">
+              {Array.from({ length: l.n }, (_, i) => (
+                <li>{t(`warranty.${l.id}.${i + 1}` as Key)}</li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="claim-title">
+    <div class="wrap prose">
+      <h2 id="claim-title">{t("warranty.claim.h2")}</h2>
+      <ol>
+        {[1, 2, 3].map((i) => <li>{t(`warranty.claim.${i}` as Key, { phone: site.phoneDisplay })}</li>)}
+      </ol>
+      <h2>{t("warranty.away.h2")}</h2>
+      <p>{t("warranty.away.text")}</p>
+      <div class="actions">
+        <a class="btn btn-primary" href={`tel:${tel}`}>{nb(t("cta.call", { phone: site.phoneDisplay }))}</a>
+        <a class="btn btn-quiet" href={routeUrl(locale, "book")}>{t("cta.book")}</a>
+      </div>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,57 @@
+---
+import Base from "../layouts/Base.astro";
+import type { Locale } from "../lib/lang";
+import { htmlLang, useI18n } from "../i18n";
+import type { Key } from "../i18n/en";
+import { site } from "../lib/site";
+import PageHead from "../components/PageHead.astro";
+
+// A template written to BC PIPA. s.3: who the Act covers. s.10: purposes stated on or before collection,
+// and who answers questions. The other sections follow ss.9, 23, 24, 29, 34 and 35. Not legal advice.
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const { t } = useI18n(locale);
+const lang = htmlLang[locale];
+const updated = new Intl.DateTimeFormat(lang, { dateStyle: "long", timeZone: "UTC" }).format(new Date("2026-11-19"));
+const address = `${site.address.street}, ${site.address.city}, ${site.address.region}`;
+const vars = { name: site.name, phone: site.phoneDisplay, address };
+const sections = [
+  { id: "who", pipa: "s3" },
+  { id: "collect", pipa: "s10", items: 4 },
+  { id: "officer", pipa: "s10-contact" },
+  { id: "consent", pipa: "s9" },
+  { id: "share" },
+  { id: "keep", pipa: "s34-35" },
+  { id: "access", pipa: "s23-24" },
+  { id: "site" },
+  { id: "complain" },
+] as const;
+---
+
+<Base locale={locale} route="privacy" title={t("privacy.title", { name: site.name })} description={t("privacy.desc")}>
+  <PageHead eyebrow={t("privacy.eyebrow")} title={t("privacy.h1")} lead={t("privacy.lead", vars)}>
+    <p class="svc-small">{t("privacy.updated", { date: updated })} · <span class="tag">{t("sample")}</span> {t("privacy.template")}</p>
+  </PageHead>
+
+  <section class="section section-alt" aria-label={t("privacy.eyebrow")}>
+    <div class="wrap prose">
+      {
+        sections.map((s) => (
+          <section id={s.id} data-pipa={"pipa" in s ? s.pipa : undefined} aria-labelledby={`${s.id}-h`}>
+            <h2 id={`${s.id}-h`}>{t(`privacy.${s.id}.h2` as Key)}</h2>
+            <p>{t(`privacy.${s.id}.text` as Key, vars)}</p>
+            {"items" in s && (
+              <ul>
+                {Array.from({ length: s.items }, (_, i) => (
+                  <li>{t(`privacy.${s.id}.${i + 1}` as Key)}</li>
+                ))}
+              </ul>
+            )}
+          </section>
+        ))
+      }
+    </div>
+  </section>
+</Base>
