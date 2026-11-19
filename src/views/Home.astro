@@ -1,0 +1,220 @@
+---
+import Base from "../layouts/Base.astro";
+import type { Locale } from "../lib/lang";
+import { htmlLang, useI18n } from "../i18n";
+import type { Key } from "../i18n/en";
+import { routeUrl, site } from "../lib/site";
+import { formatTime, weekdayName } from "../lib/hours";
+import Art from "../components/Art.astro";
+import HeroSplit from "../components/home/HeroSplit.astro";
+import HeroFull from "../components/home/HeroFull.astro";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const { t } = useI18n(locale);
+const lang = htmlLang[locale];
+
+// Both hero variants stay buildable; split won the Phase 1 comparison (docs/decisions.md).
+// PUBLIC_HERO=full npm run build renders the other one for screenshots.
+const hero = import.meta.env.PUBLIC_HERO === "full" ? "full" : "split";
+
+const book = (q: string) => `${routeUrl(locale, "book")}?${q}`;
+const makes = [
+  { key: "bmw", q: "make=bmw-mini", art: "hatch" },
+  { key: "mercedes", q: "make=mercedes-amg", art: "sedan" },
+  { key: "vag", q: "make=vw-audi-porsche", art: "coupe" },
+  { key: "other", q: "make=other", art: "wrench" },
+] as const;
+const services = [
+  { key: "tires", q: "service=tires", art: "tire" },
+  { key: "fleet", q: "service=fleet", art: "fleet" },
+  { key: "carplay", q: "service=carplay", art: "screen" },
+] as const;
+const date = new Intl.DateTimeFormat(lang, { dateStyle: "medium", timeZone: "UTC" });
+const num = new Intl.NumberFormat(lang, { minimumFractionDigits: 0 });
+const money = new Intl.NumberFormat(lang, { style: "currency", currency: "CAD", maximumFractionDigits: 0 });
+const rows = ["price", "talk", "parts"] as const;
+// Monday first on the page; site.json is Sunday first.
+const week = [1, 2, 3, 4, 5, 6, 0].map((w) => ({ w, ...site.hours[w] }));
+const { street, city, region } = site.address;
+---
+
+<Base locale={locale} route="" title={t("home.title", { name: site.name })} description={t("home.desc")}>
+  {hero === "full" ? <HeroFull locale={locale} /> : <HeroSplit locale={locale} />}
+
+  <section id="makes" class="section" aria-labelledby="makes-title" data-section="makes">
+    <div class="wrap">
+      <p class="eyebrow">{t("makes.eyebrow")} <span class="mono">{site.sample.workOrder.number}</span></p>
+      <h2 id="makes-title">{t("makes.h2")}</h2>
+      <p class="section-lead">{t("makes.lead")}</p>
+      <ul class="bento">
+        {
+          makes.map((m) => (
+            <li class="tile tile-make">
+              <a href={book(m.q)}>
+                <Art name={m.art} />
+                <span class="tile-title">{t(`make.${m.key}` as Key)}</span>
+                <span class="tile-sub mono">{t(`make.${m.key}.sub` as Key)}</span>
+              </a>
+            </li>
+          ))
+        }
+        {
+          services.map((s) => (
+            <li class="tile tile-service">
+              <a href={book(s.q)}>
+                <Art name={s.art} />
+                <span class="tile-title">{t(`tile.${s.key}` as Key)}</span>
+                <span class="tile-sub">{t(`tile.${s.key}.sub` as Key)}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section id="how" class="section section-alt" aria-labelledby="how-title" data-section="how">
+    <div class="wrap">
+      <p class="eyebrow">{t("how.eyebrow")}</p>
+      <h2 id="how-title">{t("how.h2")}</h2>
+      <ol class="steps">
+        {
+          ([1, 2, 3] as const).map((n) => (
+            <li class="card step">
+              <span class="step-n mono">{`0${n}`}</span>
+              <h3>{t(`how.${n}.title` as Key)}</h3>
+              <p>{t(`how.${n}.text` as Key)}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section id="proof" class="section garage" aria-labelledby="proof-title" data-section="proof">
+    <div class="wrap proof-grid">
+      <div class="proof-photo">
+        <p class="eyebrow">{t("proof.eyebrow")}</p>
+        <h2 id="proof-title">{t("proof.h2")}</h2>
+        <figure class="inspection">
+          <div class="photo-slot"><Art name="brake" /></div>
+          <figcaption>
+            <span class="tag">{t("sample")}</span>
+            {t("proof.caption")}
+          </figcaption>
+        </figure>
+        <ol class="callouts">
+          <li>{t("proof.c1")}</li>
+          <li>{t("proof.c2")}</li>
+          <li>{t("proof.c3")}</li>
+        </ol>
+      </div>
+      <div class="proof-side">
+        <h3>{t("reviews.h3")}</h3>
+        <ul class="reviews snap-row" data-sample tabindex="0" aria-label={t("reviews.h3")}>
+          {
+            site.sample.reviews.map((r, i) => (
+              <li class="card review">
+                <p class="review-meta">
+                  <span class="stars" aria-hidden="true">{"★".repeat(r.rating) + "☆".repeat(5 - r.rating)}</span>
+                  <span class="vh">{t("review.stars", { rating: r.rating })}</span>
+                  <time class="mono" datetime={r.date}>{date.format(new Date(r.date))}</time>
+                </p>
+                <blockquote><p>{t(`review.${i + 1}.text` as Key)}</p></blockquote>
+                <p class="review-name">{t(`review.${i + 1}.name` as Key)} <span class="tag">{t("sample")}</span></p>
+              </li>
+            ))
+          }
+        </ul>
+        <div class="card warranty">
+          <h3>{t("warranty.title")}</h3>
+          <p>{t("warranty.text")}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="compare" class="section" aria-labelledby="compare-title" data-section="compare">
+    <div class="wrap">
+      <p class="eyebrow">{t("compare.eyebrow")}</p>
+      <h2 id="compare-title">{t("compare.h2")}</h2>
+      <table class="compare">
+        <caption class="vh">{t("compare.caption")}</caption>
+        <thead>
+          <tr><td></td><th scope="col">{t("compare.us")}</th><th scope="col">{t("compare.dealer")}</th></tr>
+        </thead>
+        <tbody>
+          {
+            rows.map((r) => (
+              <tr>
+                <th scope="row">{t(`compare.${r}` as Key)}</th>
+                <td>{t(`compare.${r}.us` as Key, { rate: money.format(site.sample.laborRate) })}</td>
+                <td>{t(`compare.${r}.dealer` as Key)}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="blog" class="section section-alt" aria-labelledby="blog-title" data-section="blog">
+    <div class="wrap">
+      <p class="eyebrow">{t("blog.eyebrow")}</p>
+      <h2 id="blog-title">{t("blog.h2")}</h2>
+      <ul class="posts snap-row" tabindex="0" aria-label={t("blog.h2")}>
+        {
+          site.sample.posts.map((p, i) => (
+            <li class="card post">
+              <p class="post-meta mono">
+                <time datetime={p.date}>{date.format(new Date(p.date))}</time> · {t("blog.read", { min: num.format(p.minutes) })}
+              </p>
+              <h3>{t(`post.${i + 1}.title` as Key)}</h3>
+              <p>{t(`post.${i + 1}.text` as Key)}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section id="visit" class="section" aria-labelledby="visit-title" data-section="visit">
+    <div class="wrap visit-grid">
+      <div>
+        <p class="eyebrow">{t("visit.eyebrow")}</p>
+        <h2 id="visit-title">{t("visit.h2")}</h2>
+        <figure class="map">
+          <Art name="map" />
+          <figcaption><span class="tag">{t("sample")}</span> {t("visit.map")}</figcaption>
+        </figure>
+      </div>
+      <div class="visit-info">
+        <h3>{t("visit.address")}</h3>
+        <p>{`${street}, ${city}, ${region}`}</p>
+        {site.mapsUrl && <p><a href={site.mapsUrl}>{t("visit.directions")}</a></p>}
+        <h3>{t("visit.hours")}</h3>
+        <table class="hours">
+          <caption class="vh">{t("visit.hours")}</caption>
+          <tbody>
+            {
+              week.map((d) => (
+                <tr data-weekday={d.w}>
+                  <th scope="row">
+                    {weekdayName(d.w, lang)}
+                    <span class="today-tag" hidden>{t("visit.today")}</span>
+                  </th>
+                  <td class="mono">{d.open && d.close ? `${formatTime(d.open, lang)} – ${formatTime(d.close, lang)}` : t("visit.closed")}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+        <h3>{t("visit.entrance")}</h3>
+        <p>{t("visit.entrance.text")}</p>
+      </div>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,23 @@
+---
+import Base from "../layouts/Base.astro";
+import type { Locale } from "../lib/lang";
+import { useI18n } from "../i18n";
+import { nb, site, tel } from "../lib/site";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const { t } = useI18n(locale);
+---
+
+<Base locale={locale} route="book" title={t("book.title", { name: site.name })} description={t("book.desc", { name: site.name })}>
+  <section class="wrap hero">
+    <h1>{t("book.h1")}</h1>
+    <p class="lead">{t("book.lead", { phone: site.phoneDisplay })}</p>
+    <div class="actions">
+      <a class="btn btn-primary" href={`tel:${tel}`}>{nb(t("cta.call", { phone: site.phoneDisplay }))}</a>
+    </div>
+    <p class="note">{t("book.demo")}</p>
+  </section>
+</Base>
