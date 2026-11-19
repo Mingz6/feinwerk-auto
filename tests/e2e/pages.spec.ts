@@ -42,6 +42,14 @@ test("a French missing URL lists the French pages first", async ({ page }) => {
   await expect(page.locator("[data-search-group]").first()).toHaveAttribute("data-search-group", "fr");
 });
 
+test("Enter on a French missing URL opens the French match, not the English one", async ({ page }) => {
+  await page.goto("fr/nope/");
+  const input = page.locator("[data-search] input");
+  await input.fill("BMW");
+  await input.press("Enter");
+  await expect(page).toHaveURL(/\/fr\/bmw-mini\/$/);
+});
+
 test("the header links to Blog, About and Reviews and marks a post as Blog", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("blog/bc-winter-tires/");
