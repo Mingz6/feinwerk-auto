@@ -1,0 +1,106 @@
+---
+import Base from "../layouts/Base.astro";
+import { LOCALES } from "../lib/lang";
+import { htmlLang, langName, useI18n } from "../i18n";
+import type { Key } from "../i18n/en";
+import { assetUrl, nb, routeUrl, ROUTES, site, tel, type Route } from "../lib/site";
+import { SERVICE_NAV } from "../data/services";
+import { POSTS, postTitle } from "../data/posts";
+
+// One 404 serves every URL, so it shows all four languages, never redirects and carries no
+// canonical or hreflang (Base notFound). Search filters a built-in index of every page;
+// without JavaScript the form reloads this page and the full index shows.
+const { t } = useI18n("en");
+const label = (r: Route): Key => {
+  if (r === "") return "nav.home";
+  const svc = SERVICE_NAV.find((n) => n.slug === r);
+  if (svc) return svc.label as Key;
+  const post = POSTS.find((p) => `blog/${p.slug}` === r);
+  if (post) return postTitle(post);
+  return `nav.${r}` as Key;
+};
+---
+
+<Base locale="en" route="" notFound title={t("404.title")} description={t("404.text")}>
+  <section class="wrap lost-page">
+    <h1>{t("404.title")}</h1>
+    <ul class="lost">
+      {
+        LOCALES.map((l) => {
+          const tl = useI18n(l).t;
+          return (
+            <li lang={htmlLang[l]}>
+              {tl("404.text")} <a href={routeUrl(l)}>{tl("404.home")}</a>
+            </li>
+          );
+        })
+      }
+    </ul>
+    <div class="actions">
+      <a class="btn btn-primary" href={routeUrl("en", "book")}>{t("cta.book")}</a>
+      <a class="btn btn-quiet" href={`tel:${tel}`}>{nb(t("cta.call", { phone: site.phoneDisplay }))}</a>
+    </div>
+    <form class="lost-search" role="search" method="get" action={assetUrl("404.html")} data-search>
+      <label for="q">{t("404.search")}</label>
+      <div class="lost-row">
+        <input id="q" name="q" type="search" autocomplete="off" enterkeyhint="search" />
+        <button class="btn" type="submit">{t("404.search.button")}</button>
+      </div>
+    </form>
+    <p class="svc-small" role="status" data-search-empty hidden>{t("404.search.empty")}</p>
+    <div class="lost-index">
+      {
+        LOCALES.map((l) => {
+          const tl = useI18n(l).t;
+          return (
+            <section lang={htmlLang[l]} data-search-group={l} aria-labelledby={`idx-${l}`}>
+              <h2 id={`idx-${l}`}>{langName[l]}</h2>
+              <ul>
+                {ROUTES.map((r) => (
+                  <li data-search-item data-words={r.replace(/[/-]/g, " ")}>
+                    <a href={routeUrl(l, r)}>{tl(label(r))}</a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          );
+        })
+      }
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { matches } from "../lib/search";
+
+  const form = document.querySelector<HTMLFormElement>("[data-search]");
+  if (form) {
+    const input = form.querySelector<HTMLInputElement>("input")!;
+    const items = [...document.querySelectorAll<HTMLElement>("[data-search-item]")];
+    const groups = [...document.querySelectorAll<HTMLElement>("[data-search-group]")];
+    const empty = document.querySelector<HTMLElement>("[data-search-empty]")!;
+    // The visitor's language first: the prefix of the URL that wasn't found.
+    const prefix = location.pathname.split("/").find((s) => ["fr", "zh-hans", "zh-hk"].includes(s));
+    const mine = groups.find((g) => g.dataset.searchGroup === prefix);
+    if (mine) mine.parentElement?.prepend(mine);
+    const run = () => {
+      let shown = 0;
+      for (const li of items) {
+        const on = matches(input.value, `${li.textContent} ${li.dataset.words}`);
+        li.hidden = !on;
+        if (on) shown++;
+      }
+      for (const g of groups) g.hidden = !g.querySelector("[data-search-item]:not([hidden])");
+      empty.hidden = shown > 0;
+    };
+    input.value = new URLSearchParams(location.search).get("q") ?? "";
+    input.addEventListener("input", run);
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      run();
+      const first = items.find((li) => !li.hidden)?.querySelector("a");
+      if (first && input.value.trim()) location.assign(first.href);
+    });
+    run();
+  }
+</script>

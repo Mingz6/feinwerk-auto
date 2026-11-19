@@ -1,0 +1,91 @@
+{
+  "name": "Feinwerk Auto",
+  "phone": "+1 604-555-0148",
+  "phoneDisplay": "604-555-0148",
+  "address": {
+    "street": "88 Sample Way",
+    "city": "Vancouver",
+    "region": "BC",
+    "postal": ""
+  },
+  "timeZone": "America/Vancouver",
+  "hours": [
+    {
+      "day": "Sunday",
+      "open": null,
+      "close": null
+    },
+    {
+      "day": "Monday",
+      "open": "08:00",
+      "close": "18:00"
+    },
+    {
+      "day": "Tuesday",
+      "open": "08:00",
+      "close": "18:00"
+    },
+    {
+      "day": "Wednesday",
+      "open": "08:00",
+      "close": "18:00"
+    },
+    {
+      "day": "Thursday",
+      "open": "08:00",
+      "close": "18:00"
+    },
+    {
+      "day": "Friday",
+      "open": "08:00",
+      "close": "18:00"
+    },
+    {
+      "day": "Saturday",
+      "open": "09:00",
+      "close": "15:00"
+    }
+  ],
+  "mapsUrl": "",
+  "sample": {
+    "rating": 4.8,
+    "laborRate": 165,
+    "workOrder": {
+      "number": "FW-0142",
+      "car": "2019 BMW 330i",
+      "km": 84210,
+      "prices": [
+        412,
+        129,
+        286
+      ],
+      "photos": 3
+    },
+    "reviews": [
+      {
+        "date": "2026-10-14",
+        "rating": 5
+      },
+      {
+        "date": "2026-09-02",
+        "rating": 5
+      },
+      {
+        "date": "2026-07-21",
+        "rating": 4
+      },
+      {
+        "date": "2026-06-03",
+        "rating": 5
+      },
+      {
+        "date": "2026-04-18",
+        "rating": 5
+      },
+      {
+        "date": "2026-02-09",
+        "rating": 5
+      }
+    ]
+  }
+}

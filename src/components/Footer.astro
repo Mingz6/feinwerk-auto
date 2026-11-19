@@ -1,0 +1,44 @@
+---
+import type { Locale } from "../lib/lang";
+import { htmlLang, useI18n } from "../i18n";
+import { nb, routeUrl, site, tel } from "../lib/site";
+import { formatTime, weekdayName } from "../lib/hours";
+import { SERVICE_NAV } from "../data/services";
+import type { Key } from "../i18n/en";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const { t } = useI18n(locale);
+const lang = htmlLang[locale];
+const { street, city, region } = site.address;
+const week = [1, 2, 3, 4, 5, 6, 0].map((w) => ({ w, ...site.hours[w] }));
+---
+
+<footer class="footer">
+  <div class="wrap footer-grid">
+    <div>
+      <h2 class="footer-title">{t("footer.contact")}</h2>
+      <dl class="footer-contact">
+        <div><dt>{t("footer.address")}</dt><dd>{`${street}, ${city}, ${region}`}</dd></div>
+        <div><dt>{t("footer.phone")}</dt><dd><a class="phone" href={`tel:${tel}`}>{nb(site.phoneDisplay)}</a></dd></div>
+      </dl>
+    </div>
+    <div>
+      <h2 class="footer-title">{t("footer.hours")}</h2>
+      <ul class="footer-hours">
+        {week.map((d) => <li><span>{weekdayName(d.w, lang, "short")}</span><span class="mono">{d.open && d.close ? `${formatTime(d.open, lang)} – ${formatTime(d.close, lang)}` : t("visit.closed")}</span></li>)}
+      </ul>
+    </div>
+    <div>
+      <h2 class="footer-title">{t("footer.links")}</h2>
+      <ul class="footer-links">
+        <li><a href={routeUrl(locale, "book")}>{t("nav.book")}</a></li>
+        {SERVICE_NAV.map((n) => <li><a href={routeUrl(locale, n.slug)}>{t(n.label as Key)}</a></li>)}
+        {(["contact", "about", "reviews", "blog", "warranty", "privacy"] as const).map((r) => <li><a href={routeUrl(locale, r)}>{t(`nav.${r}`)}</a></li>)}
+      </ul>
+    </div>
+    <p class="disclaimer" data-disclaimer>{t("footer.disclaimer")}</p>
+  </div>
+</footer>
