@@ -3,6 +3,8 @@ import type { Locale } from "../lib/lang";
 import { htmlLang, useI18n } from "../i18n";
 import { nb, routeUrl, site, tel } from "../lib/site";
 import { formatTime, weekdayName } from "../lib/hours";
+import { SERVICE_NAV } from "../data/services";
+import type { Key } from "../i18n/en";
 
 interface Props {
   locale: Locale;
@@ -34,7 +36,7 @@ const home = routeUrl(locale);
       <h2 class="footer-title">{t("footer.links")}</h2>
       <ul class="footer-links">
         <li><a href={routeUrl(locale, "book")}>{t("nav.book")}</a></li>
-        <li><a href={`${home}#makes`}>{t("nav.services")}</a></li>
+        {SERVICE_NAV.map((n) => <li><a href={routeUrl(locale, n.slug)}>{t(n.label as Key)}</a></li>)}
         <li><a href={`${home}#visit`}>{t("nav.visit")}</a></li>
       </ul>
     </div>

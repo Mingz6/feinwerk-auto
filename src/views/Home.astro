@@ -4,6 +4,7 @@ import type { Locale } from "../lib/lang";
 import { htmlLang, useI18n } from "../i18n";
 import type { Key } from "../i18n/en";
 import { routeUrl, site } from "../lib/site";
+import { bookQuery } from "../lib/book";
 import { formatTime, weekdayName } from "../lib/hours";
 import Art from "../components/Art.astro";
 import HeroSplit from "../components/home/HeroSplit.astro";
@@ -20,17 +21,18 @@ const lang = htmlLang[locale];
 // PUBLIC_HERO=full npm run build renders the other one for screenshots.
 const hero = import.meta.env.PUBLIC_HERO === "full" ? "full" : "split";
 
-const book = (q: string) => `${routeUrl(locale, "book")}?${q}`;
+// Make and service tiles open their page (PLAN: tap, service list, booking with the make filled in).
+// "Other European" has no page, so it opens the booking with the make set.
 const makes = [
-  { key: "bmw", q: "make=bmw-mini", art: "hatch" },
-  { key: "mercedes", q: "make=mercedes-amg", art: "sedan" },
-  { key: "vag", q: "make=vw-audi-porsche", art: "coupe" },
-  { key: "other", q: "make=other", art: "wrench" },
+  { key: "bmw", href: routeUrl(locale, "bmw-mini"), art: "hatch" },
+  { key: "mercedes", href: routeUrl(locale, "mercedes-amg"), art: "sedan" },
+  { key: "vag", href: routeUrl(locale, "vw-audi-porsche"), art: "coupe" },
+  { key: "other", href: `${routeUrl(locale, "book")}${bookQuery({ make: "other", service: "diagnosis" })}`, art: "wrench" },
 ] as const;
 const services = [
-  { key: "tires", q: "service=tires", art: "tire" },
-  { key: "fleet", q: "service=fleet", art: "fleet" },
-  { key: "carplay", q: "service=carplay", art: "screen" },
+  { key: "tires", href: routeUrl(locale, "tires"), art: "tire" },
+  { key: "fleet", href: routeUrl(locale, "fleet"), art: "fleet" },
+  { key: "carplay", href: routeUrl(locale, "carplay-retrofit"), art: "screen" },
 ] as const;
 const date = new Intl.DateTimeFormat(lang, { dateStyle: "medium", timeZone: "UTC" });
 const num = new Intl.NumberFormat(lang, { minimumFractionDigits: 0 });
@@ -53,7 +55,7 @@ const { street, city, region } = site.address;
         {
           makes.map((m) => (
             <li class="tile tile-make">
-              <a href={book(m.q)}>
+              <a href={m.href}>
                 <Art name={m.art} />
                 <span class="tile-title">{t(`make.${m.key}` as Key)}</span>
                 <span class="tile-sub mono">{t(`make.${m.key}.sub` as Key)}</span>
@@ -64,7 +66,7 @@ const { street, city, region } = site.address;
         {
           services.map((s) => (
             <li class="tile tile-service">
-              <a href={book(s.q)}>
+              <a href={s.href}>
                 <Art name={s.art} />
                 <span class="tile-title">{t(`tile.${s.key}` as Key)}</span>
                 <span class="tile-sub">{t(`tile.${s.key}.sub` as Key)}</span>

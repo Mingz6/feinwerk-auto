@@ -19,3 +19,17 @@ No stock, downloaded or AI-generated images (PLAN.md, Demo safety). Only photos 
 | About: parking | Where to park and the entrance | 3:2 | 1500 × 1000 |
 | Visit: map | None: stays a drawn SVG (a made-up address has no real map) | 8:5 | SVG |
 | Blog covers (× 3) | Diagnosis story: scan tool on a car; service A/B: oil and filter; winter tires: tire tread | 16:9 | 1600 × 900 |
+
+## Service pages (Phase 2a)
+
+Each page shows an SVG line drawing in the hero until a photo exists. Same rules: Ming's own photos, badges and plates blurred.
+
+| Page | Shot | Crop | Size |
+|---|---|---|---|
+| BMW & MINI | An inline-six engine bay with the cover off, shot from the fender | 4:3 | 1200 × 900, AVIF ≤ 90 KB |
+| Mercedes-Benz & AMG | A front air strut on the bench, or a V6 with the intake off | 4:3 | 1200 × 900, AVIF ≤ 90 KB |
+| VW, Audi & Porsche | A dual-clutch gearbox fluid service, drain pan in frame | 4:3 | 1200 × 900, AVIF ≤ 90 KB |
+| Tires | A stack of bagged, tagged wheels on the storage rack | 4:3 | 1200 × 900, AVIF ≤ 90 KB |
+| Fleet | Two or three work vans or wagons lined up outside the bay door | 4:3 | 1200 × 900, AVIF ≤ 90 KB |
+| CarPlay retrofit | The factory screen showing CarPlay, dash trim in frame, no maker logo on screen | 4:3 | 1200 × 900, AVIF ≤ 90 KB |
+| Pre-purchase inspection | A tech with a paint-thickness gauge on a door panel | 4:3 | 1200 × 900, AVIF ≤ 90 KB |

@@ -2,6 +2,8 @@
 import { LOCALES, type Locale } from "../lib/lang";
 import { hreflang, htmlLang, langName, langShort, useI18n } from "../i18n";
 import { nb, routeUrl, site, tel, type Route } from "../lib/site";
+import { SERVICE_NAV } from "../data/services";
+import type { Key } from "../i18n/en";
 
 interface Props {
   locale: Locale;
@@ -13,8 +15,9 @@ const linkRoute: Route = route ?? "";
 const { t } = useI18n(locale);
 const home = routeUrl(locale);
 // Phase 2 points these at the real pages (Services menu by make, Blog, About, Reviews).
+const services = SERVICE_NAV.map((n) => ({ href: routeUrl(locale, n.slug), label: t(n.label as Key), current: route === n.slug ? ("page" as const) : undefined }));
+const servicesCurrent = services.some((s) => s.current);
 const links = [
-  { href: `${home}#makes`, label: t("nav.services") },
   { href: `${home}#how`, label: t("nav.how") },
   { href: `${home}#proof`, label: t("nav.reviews") },
   { href: `${home}#visit`, label: t("nav.visit") },
@@ -30,6 +33,12 @@ const bookCurrent = route === "book" ? "page" : undefined;
     </a>
 
     <nav class="header-nav" aria-label={t("nav.primary")}>
+      <details class="menu svc-menu" data-menu>
+        <summary class:list={{ "is-current": servicesCurrent }}>{t("nav.services")}</summary>
+        <ul class="menu-panel">
+          {services.map((s) => <li><a href={s.href} aria-current={s.current}>{s.label}</a></li>)}
+        </ul>
+      </details>
       {links.map((l) => <a href={l.href}>{l.label}</a>)}
       <a class="btn btn-primary btn-sm" href={routeUrl(locale, "book")} aria-current={bookCurrent}>{t("nav.book")}</a>
     </nav>
@@ -75,6 +84,9 @@ const bookCurrent = route === "book" ? "page" : undefined;
           <span class="vh">{t("nav.menu")}</span>
         </summary>
         <nav class="menu-panel" aria-label={t("nav.menu")}>
+          <p class="menu-label">{t("nav.services")}</p>
+          {services.map((s) => <a href={s.href} aria-current={s.current}>{s.label}</a>)}
+          <hr />
           {links.map((l) => <a href={l.href}>{l.label}</a>)}
           <a href={routeUrl(locale, "book")} aria-current={bookCurrent}>{t("nav.book")}</a>
         </nav>

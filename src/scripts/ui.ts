@@ -90,7 +90,7 @@ const shopStatus = () => {
     chips.forEach((c) => {
       c.dataset.state = s.open ? "open" : "closed";
       c.querySelector("[data-status-label]")!.textContent = label;
-      c.querySelector("[data-status-detail]")!.textContent = `· ${detail}`;
+      c.querySelector("[data-status-detail]")!.textContent = ` · ${detail}`;
     });
     const { weekday } = zonedNow(now, timeZone);
     today.forEach((row) => {
@@ -105,6 +105,22 @@ const shopStatus = () => {
   setInterval(paint, 60_000);
 };
 
+// Demo forms (fleet request): nothing is ever sent. method="dialog" outside a <dialog> never submits,
+// so without JavaScript the button does nothing; with it, a valid form swaps for the "demo" note.
+const demoForms = () => {
+  document.querySelectorAll<HTMLFormElement>("[data-demo-form]").forEach((form) => {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const sent = form.parentElement?.querySelector<HTMLElement>("[data-demo-sent]");
+      if (!sent) return;
+      form.hidden = true;
+      sent.hidden = false;
+      sent.focus();
+    });
+  });
+};
+
 theme();
 menus();
 shopStatus();
+demoForms();

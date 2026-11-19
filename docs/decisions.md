@@ -40,3 +40,17 @@ PLAN.md's Decisions are settled; they are repeated here so each can be revisited
 - **No scroll-driven section reveals yet.** Content faded by a view timeline shows half-transparent in full-page screenshots and in axe's contrast check. Only the hero drawing fades in; text never animates, so LCP isn't delayed.
 - **`--ok` token for the open dot** (green, decorative: the word "Open" carries the meaning).
 - **`PW_PORT` in `playwright.config.ts`.** Locally Astro 7 runs `astro preview` as one background server per project, and `reuseExistingServer` would silently test another checkout's build on 4321.
+
+## Phase 2a
+
+- **One view and one dynamic route per language for the seven service pages.** `src/views/Service.astro` renders any of them from `src/data/services.ts`; `src/pages/[service].astro` and its three twins list the slugs. The i18n twin test still fails if a language is missing.
+- **The booking contract is `make`, `service` and `model`** (`src/lib/book.ts`, with unit tests). Every Book button carries it twice: in its `/book/?…` href (works without JavaScript) and in `data-book-make`, `data-book-service`, `data-book-model` for the Phase 2b sheet. `parseBookQuery` drops unknown values. `model` is the block id (n20, airmatic, dsg), a hint for booking step 1.
+- **"Model" blocks must carry a make; tire and inspection blocks carry only a service.** Those fit any make, and the visitor picks it in step 1. `tests/dist.test.ts` enforces both.
+- **Home tiles now open the make and service pages**, PLAN's "tap → service list → booking". "Other European" has no page and opens booking with `make=other&service=diagnosis`.
+- **No "dealer" wording anywhere, the home comparison included.** PLAN's wireframe calls section 5 "Independent vs dealer", but its Demo safety rule bans the wording; the rule wins, and the copy now says "brand service centre" in all four languages. The test scans visible text and meta, title, alt and aria-label values on every page.
+- **Logo test by allowlist.** The favicon is the only image file in dist/; inline SVGs must be `aria-hidden` and hold no `<text>`, `<image>` or `<use>`. A photo gets added to the allowlist only after a look that badges and plates are blurred.
+- **Prices are sample ranges, formatted by `Intl` in the page language**, each with the Sample tag (`data-sample-price`, tested). Field name `samplePrice` in code.
+- **The fleet request form is `method="dialog"` outside a dialog**, so it can never submit anywhere, with or without JavaScript. With JavaScript a valid form swaps for "This is a demo. Nothing was sent." Without it, a `<noscript>` line gives the phone number. Labels and `autocomplete` on every field, inputs at 16 px.
+- **Engine facts are written as tendencies** ("can slip", "on early engines") and the page says prices vary by car. They come from general workshop knowledge, not a cited source: a real shop should review them before launch.
+- **BC winter tire dates are shown as PLAN states them** (1 October to 30 April on signed highways) with a note to check the signs and DriveBC.
+- **Services menu is a `<details>` dropdown** like the language menu (same one-open-at-a-time script); on phones the menu lists the seven pages first.
