@@ -41,7 +41,7 @@ CI runs the same check on every push against a local preview (`lighthouserc.json
 - **First visit**: the English pages read `navigator.languages` and send the visitor to the first match: `fr*` to French; `zh-Hans`, `zh-CN`, `zh-SG` or plain `zh` to 简体中文; `zh-Hant`, `zh-HK`, `zh-MO`, `zh-TW` or `yue` to 廣東話; anything else stays English. A script subtag beats a region (`zh-Hans-HK` reads Simplified). The code is `src/lib/lang.ts`, with unit tests.
 - **A choice in the language menu wins.** It is stored as `feinwerk-lang` in `localStorage` and beats the browser's list from then on.
 - **A language URL never redirects.** Only the English pages check; `/fr/` stays French for everyone, so a shared link opens in the language it was shared in.
-- **Without JavaScript** the English page simply stays, and the menu is a plain list of links.
+- **Without JavaScript** the English page simply stays; the language menu is a `<details>` list of links, so it still opens.
 - **Four dictionaries, no converter.** Cantonese and Mandarin differ in words and grammar, not just characters. 
   Tests fail the build when a key is missing in any language, `{placeholders}` differ, a page or post lacks one of its four versions, a hard-coded English string shows up in a component, or a Chinese source mixes scripts.
 - **Fonts**: Archivo, Inter and IBM Plex Mono are self-hosted (`latin` and `latin-ext`, French needs œ); Chinese uses the system fonts (PingFang, Noto Sans CJK, Microsoft YaHei or JhengHei), set per `:lang()`.
