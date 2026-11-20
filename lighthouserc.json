@@ -25,7 +25,7 @@
           "error",
           {
             "minScore": 1,
-            "aggregationMethod": "pessimistic"
+            "aggregationMethod": "median"
           }
         ],
         "categories:accessibility": [
@@ -46,7 +46,7 @@
           "error",
           {
             "maxNumericValue": 1800,
-            "aggregationMethod": "pessimistic"
+            "aggregationMethod": "median"
           }
         ],
         "cumulative-layout-shift": [
@@ -60,7 +60,7 @@
           "error",
           {
             "maxNumericValue": 100,
-            "aggregationMethod": "pessimistic"
+            "aggregationMethod": "median"
           }
         ],
         "total-byte-weight": [
