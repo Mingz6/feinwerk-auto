@@ -11,3 +11,5 @@ playwright-report/
 .lighthouseci/
 shots/
 .tmp/
+tests/e2e/__screenshots__/*
+!tests/e2e/__screenshots__/linux/

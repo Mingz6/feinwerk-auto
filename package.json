@@ -17,6 +17,8 @@
     "test:dist": "node --test \"tests/*.test.ts\"",
     "test:e2e": "playwright test --project=e2e",
     "test:axe": "playwright test --project=axe",
+    "test:visual": "playwright test --project=visual",
+    "test:visual:update": "bash scripts/update-baselines.sh",
     "validate:html": "html-validate \"dist/**/*.html\"",
     "check:links": "node scripts/check-links.mjs",
     "lhci": "lhci autorun"
