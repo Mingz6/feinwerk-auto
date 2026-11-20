@@ -110,7 +110,7 @@ PLAN.md's Decisions are settled; they are repeated here so each can be revisited
 
 - **Written Cantonese throughout, a few formal words kept in the privacy text.** Grammar words are Cantonese (我哋, 嘅, 唔, 係, 冇, 喺, 呢, 嗰, 咗); 適用於, 披露 and 撤回同意 stay because a Hong Kong privacy notice uses them. An i18n test fails on 我們, 這, 沒有 or 什麼 in the dictionary or posts.
 - **Posts written from the English, not from the 简体中文.** Same facts and hedges; HK car words where they differ from Mandarin: 呔, 雪呔, 失火, 煞車油, 冷氣隔塵網, 軚盤, 死氣喉, 波箱.
-- **One term per English term**, from a proofread against English: 車呔 (tire, 呔 in verbs like 換呔), 避震 (suspension; 懸吊 is the Taiwan word), 油格 (filter), 維修位 (bay; 車位 means parking), 故障診斷 (diagnosis), 吊機 (lift), 輪圈 (rim), 毫米 (mm), 三峰山雪花標誌 (mountain and snowflake).
+- **One term per English term**, from a proofread against English: 車呔 (tire, in labels and headings; 呔 in compounds and running text: 雪呔, 換呔, 條呔), 避震 (suspension; 懸吊 is the Taiwan word), 油格 (filter), 維修位 (bay; 車位 means parking), 故障診斷 (diagnosis), 吊機 (lift), 輪圈 (rim), 毫米 (mm), 三峰山雪花標誌 (mountain and snowflake).
 - **Brands stay in Latin: Mercedes-Benz, not 平治.** Hong Kong says 平治 and 寶馬, but every other string already writes the brand, the make labels and booking confirmation need it, and 简体中文 made the same call. A native reader may want 平治 in running text: Open for the native-speaker pass.
 - **保養 means both maintenance and warranty**, as it does on Hong Kong shop signs (保養期). The warranty page and the A/B post's 新車原廠保養期 keep it; 保用 would be a second word for one thing.
 - **Hong Kong's own clock: 上午/下午 and 12 hours** ("下午3:30"), straight from `Intl` with `zh-HK`. 简体中文 keeps 24 hours. The Cantonese e2e test checks both the time choices and the confirmation line.
