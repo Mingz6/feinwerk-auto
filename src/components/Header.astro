@@ -1,0 +1,94 @@
+---
+import { LOCALES, type Locale } from "../lib/lang";
+import { hreflang, htmlLang, langName, langShort, useI18n } from "../i18n";
+import { nb, routeUrl, site, tel, type Route } from "../lib/site";
+import { SERVICE_NAV } from "../data/services";
+import type { Key } from "../i18n/en";
+
+interface Props {
+  locale: Locale;
+  /** Absent on the 404: no page is current there. */
+  route?: Route;
+}
+const { locale, route } = Astro.props;
+const linkRoute: Route = route ?? "";
+const { t } = useI18n(locale);
+const home = routeUrl(locale);
+// PLAN.md navigation: Services (menu) · Blog · About · Reviews · Book. Contact sits in the phone menu and the footer.
+const services = SERVICE_NAV.map((n) => ({ href: routeUrl(locale, n.slug), label: t(n.label as Key), current: route === n.slug ? ("page" as const) : undefined }));
+const servicesCurrent = services.some((s) => s.current);
+const page = (r: Route, key: Key) => ({ href: routeUrl(locale, r), label: t(key), current: route === r || (r === "blog" && route?.startsWith("blog/")) ? ("page" as const) : undefined });
+const links = [page("blog", "nav.blog"), page("about", "nav.about"), page("reviews", "nav.reviews")];
+const contact = page("contact", "nav.contact");
+const bookCurrent = route === "book" ? "page" : undefined;
+---
+
+<header class="header">
+  <div class="wrap header-row">
+    <a class="brand" href={home} aria-current={route === "" ? "page" : undefined}>
+      <span class="brand-name" lang="en">{site.name}</span>
+      <span class="brand-desc">{t("brand.descriptor")}</span>
+    </a>
+
+    <nav class="header-nav" aria-label={t("nav.primary")}>
+      <details class="menu svc-menu" data-menu>
+        <summary class:list={{ "is-current": servicesCurrent }}>{t("nav.services")}</summary>
+        <ul class="menu-panel">
+          {services.map((s) => <li><a href={s.href} aria-current={s.current}>{s.label}</a></li>)}
+        </ul>
+      </details>
+      {links.map((l) => <a href={l.href} aria-current={l.current}>{l.label}</a>)}
+      <a class="btn btn-primary btn-sm" href={routeUrl(locale, "book")} aria-current={bookCurrent}>{t("nav.book")}</a>
+    </nav>
+
+    <div class="header-tools">
+      <details class="menu lang-menu" data-lang-menu data-menu>
+        <summary>
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.6 2.6 4 5.6 4 9s-1.4 6.4-4 9c-2.6-2.6-4-5.6-4-9s1.4-6.4 4-9Z"></path>
+          </svg>
+          <span class="vh">{`${t("lang.label")}: `}</span><span>{langShort[locale]}</span>
+        </summary>
+        <ul class="menu-panel">
+          {
+            LOCALES.map((l) => (
+              <li>
+                <a href={routeUrl(l, linkRoute)} lang={htmlLang[l]} hreflang={hreflang[l]} data-set-lang={l} aria-current={l === locale ? "true" : undefined}>
+                  {langName[l]}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </details>
+
+      <button type="button" class="icon-btn theme-toggle" data-theme-toggle aria-label={`${t("theme.label")}: ${t("theme.auto")}`}>
+        <svg class="i-auto" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="8"></circle><path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor"></path>
+        </svg>
+        <svg class="i-light" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+        </svg>
+        <svg class="i-dark" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"></path>
+        </svg>
+      </button>
+
+      <a class="phone header-phone" href={`tel:${tel}`}>{nb(site.phoneDisplay)}</a>
+
+      <details class="menu nav-menu" data-menu>
+        <summary>
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+          <span class="vh">{t("nav.menu")}</span>
+        </summary>
+        <nav class="menu-panel" aria-label={t("nav.menu")}>
+          <p class="menu-label">{t("nav.services")}</p>
+          {services.map((s) => <a href={s.href} aria-current={s.current}>{s.label}</a>)}
+          <hr />
+          {[...links, contact].map((l) => <a href={l.href} aria-current={l.current}>{l.label}</a>)}
+          <a href={routeUrl(locale, "book")} aria-current={bookCurrent}>{t("nav.book")}</a>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>

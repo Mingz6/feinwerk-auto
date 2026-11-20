@@ -1,0 +1,23 @@
+---
+// Hero A: full-bleed. The photo slot fills the band edge to edge and the copy sits over it.
+import type { Locale } from "../../lib/lang";
+import { useI18n } from "../../i18n";
+import Art from "../Art.astro";
+import HeroCopy from "./HeroCopy.astro";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const { t } = useI18n(locale);
+---
+
+<section class="hero hero-full garage" aria-labelledby="hero-title" data-section="hero" data-hero="full">
+  <figure class="hero-bleed">
+    <Art name="lift" />
+    <figcaption class="slot-label">{t("hero.photo")}</figcaption>
+  </figure>
+  <div class="wrap">
+    <HeroCopy locale={locale} />
+  </div>
+</section>

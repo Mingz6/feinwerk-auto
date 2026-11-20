@@ -1,0 +1,72 @@
+---
+import Base from "../layouts/Base.astro";
+import type { Locale } from "../lib/lang";
+import { useI18n } from "../i18n";
+import type { Key } from "../i18n/en";
+import { routeUrl, site } from "../lib/site";
+import PageHead from "../components/PageHead.astro";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const { t } = useI18n(locale);
+const { street, city, region } = site.address;
+const team = [1, 2, 3] as const;
+---
+
+<Base locale={locale} route="about" title={t("about.title", { name: site.name })} description={t("about.desc")}>
+  <PageHead eyebrow={t("about.eyebrow")} title={t("about.h1")} lead={t("about.lead")} art="lift">
+    <div class="actions">
+      <a class="btn btn-primary" href={routeUrl(locale, "book")}>{t("cta.book")}</a>
+    </div>
+  </PageHead>
+
+  <section class="section section-alt" aria-labelledby="how-title">
+    <div class="wrap">
+      <h2 id="how-title">{t("about.how.h2")}</h2>
+      <ol class="steps">
+        {[1, 2, 3].map((i) => (
+          <li class="step card">
+            <span class="step-n mono" aria-hidden="true">{i}</span>
+            <h3>{t(`about.how.${i}.h3` as Key)}</h3>
+            <p>{t(`about.how.${i}` as Key)}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="team-title">
+    <div class="wrap">
+      <h2 id="team-title">{t("about.team.h2")}</h2>
+      <p class="section-lead">{t("about.team.lead")}</p>
+      <ul class="team" data-sample>
+        {team.map((i) => (
+          <li class="card team-card">
+            <span class="team-mono mono" aria-hidden="true">{t(`about.team.${i}.name` as Key).slice(0, 1)}</span>
+            <h3>{t(`about.team.${i}.name` as Key)} <span class="tag">{t("sample")}</span></h3>
+            <p class="svc-label">{t(`about.team.${i}.role` as Key)}</p>
+            <p>{t(`about.team.${i}.text` as Key)}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section-alt" aria-labelledby="find-title">
+    <div class="wrap svc-pair">
+      <div class="card">
+        <h2 id="find-title">{t("about.find.h2")}</h2>
+        <p>{`${street}, ${city}, ${region}`}</p>
+        <p>{t("about.find.text")}</p>
+      </div>
+      <div class="card">
+        <h2>{t("about.parking.h2")}</h2>
+        <p>{t("visit.entrance.text")}</p>
+        <p>{t("about.parking.text")}</p>
+      </div>
+      <p class="svc-small"><a href={routeUrl(locale, "contact")}>{t("visit.more")}</a></p>
+    </div>
+  </section>
+</Base>

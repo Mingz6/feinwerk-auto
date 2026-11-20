@@ -1,0 +1,22 @@
+---
+import type { Locale } from "../lib/lang";
+import { useI18n } from "../i18n";
+import { routeUrl } from "../lib/site";
+import BookingFlow from "./BookingFlow.astro";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const { t } = useI18n(locale);
+---
+
+<dialog class="sheet" data-book-sheet data-book-path={routeUrl(locale, "book")} aria-labelledby="bs-title">
+  <div class="sheet-head">
+    <h2 id="bs-title">{t("book.h1")}</h2>
+    <button class="sheet-close" type="button" data-close aria-label={t("book.close")}>
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+    </button>
+  </div>
+  <BookingFlow locale={locale} prefix="bs" />
+</dialog>
