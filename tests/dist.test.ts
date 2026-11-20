@@ -118,10 +118,11 @@ for (const file of pages.filter((f) => SERVICE_SLUGS.some((s) => relative(DIST, 
   });
 }
 
-test("no maker logo: the favicon is the only image file, and inline drawings carry no words or images", () => {
+test("no maker logo: only the favicon, touch icon and share cards are image files, and inline drawings carry no words or images", () => {
   const images = walk(DIST).map((f) => relative(DIST, f).replaceAll("\\", "/")).filter((f) => /\.(svg|png|jpe?g|webp|avif|gif|ico)$/i.test(f));
   // A new image (Ming's photos) gets added here only after a look that badges and plates are blurred.
-  assert.deepEqual(images, ["favicon.svg"]);
+  // The share cards and touch icon are drawn by scripts/share-cards.mjs: type and line art only.
+  assert.deepEqual(images.sort(), ["apple-touch-icon.png", "favicon.svg", "og/en.png", "og/fr.png", "og/zh-hans.png", "og/zh-hk.png"]);
   const maker = /logo|badge|emblem|roundel|crest|bmw|mini|mercedes|benz|amg|audi|porsche|volkswagen|\bvw\b/i;
   for (const file of pages) {
     const html = readFileSync(file, "utf8");
@@ -364,4 +365,27 @@ test("404: search box, Call and Book; no canonical, hreflang, og:url or language
   assert.ok(html.includes(`href="${BASE}book/"`), "Book");
   assert.doesNotMatch(html, /rel="canonical"|<link\b[^>]*hreflang=|og:url|location\.replace/);
   assert.equal([...html.matchAll(/<li\b[^>]*data-search-item/g)].length, 18 * 4, "index of every page in every language");
+});
+
+const pngSize = (file: string) => {
+  const b = readFileSync(file);
+  assert.equal(b.toString("latin1", 1, 4), "PNG", `${file} is not a PNG`);
+  return [b.readUInt32BE(16), b.readUInt32BE(20)];
+};
+const ogFile: Record<string, string> = { "en-CA": "en", "fr-CA": "fr", "zh-Hans": "zh-hans", "zh-HK": "zh-hk" };
+
+test("share and icons: every page has the SVG favicon, the 180x180 touch icon and its language's 1200x630 og:image", () => {
+  assert.deepEqual(pngSize(join(DIST, "apple-touch-icon.png")), [180, 180]);
+  for (const f of Object.values(ogFile)) assert.deepEqual(pngSize(join(DIST, "og", `${f}.png`)), [1200, 630], f);
+  for (const file of pages) {
+    const html = readFileSync(file, "utf8");
+    const lang = html.match(/<html lang="([^"]+)"/)![1];
+    assert.match(html, /<link rel="icon" href="\/feinwerk-auto\/favicon\.svg" type="image\/svg\+xml">/, file);
+    assert.match(html, /<link rel="apple-touch-icon" href="\/feinwerk-auto\/apple-touch-icon\.png">/, file);
+    const og = html.match(/<meta property="og:image" content="([^"]+)">/)?.[1];
+    assert.equal(og, `https://mingz6.github.io/feinwerk-auto/og/${ogFile[lang]}.png`, file);
+    assert.match(html, /<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">/, file);
+    assert.match(html, /<meta property="og:image:alt" content="[^"]{10,}">/, file);
+    assert.match(html, /<meta name="twitter:card" content="summary_large_image">/, file);
+  }
 });
