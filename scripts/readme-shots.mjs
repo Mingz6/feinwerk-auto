@@ -1,11 +1,15 @@
 // The README's screenshots: one per language, both themes, phone and desktop, on the fixed Wednesday 10:00
 // Vancouver clock the baselines use. Usage: start `npx astro preview --port N`, then
 // node scripts/readme-shots.mjs http://localhost:N/feinwerk-auto/ [outDir]. Defaults to the live site.
+// With --phones it takes the review set instead: Home, a make page and Book × 4 languages × 2 themes,
+// first screen at 390 × 844, into docs/screenshots/phone/ (the README's review table links them).
 import { mkdirSync } from "node:fs";
 import { chromium } from "@playwright/test";
 
-const BASE = process.argv[2] ?? "https://mingz6.github.io/feinwerk-auto/";
-const OUT = process.argv[3] ?? "docs/screenshots";
+const PHONES = process.argv.includes("--phones");
+const [BASE = "https://mingz6.github.io/feinwerk-auto/", OUT = PHONES ? "docs/screenshots/phone" : "docs/screenshots"] = process.argv
+  .slice(2)
+  .filter((a) => !a.startsWith("--"));
 const FIXED_NOW = new Date("2026-11-18T18:00:00Z");
 const phone = { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true };
 const desktop = { viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 };
@@ -17,10 +21,17 @@ const SHOTS = [
   // A make page's engine block opens the booking sheet at step 3, day and time; Thursday is picked.
   { file: "booking-phone-light-fr.jpg", path: "fr/bmw-mini/", theme: "light", device: phone, book: true },
 ];
+const LANGS = { en: "", fr: "fr/", "zh-hans": "zh-hans/", "zh-hk": "zh-hk/" };
+const PAGES = { home: "", make: "bmw-mini/", book: "book/" };
+const PHONE_SET = Object.entries(LANGS).flatMap(([lang, prefix]) =>
+  Object.entries(PAGES).flatMap(([name, path]) =>
+    ["light", "dark"].map((theme) => ({ file: `${lang}-${name}-${theme}.jpg`, path: prefix + path, theme, device: phone })),
+  ),
+);
 
 mkdirSync(OUT, { recursive: true });
 const browser = await chromium.launch();
-for (const s of SHOTS) {
+for (const s of PHONES ? PHONE_SET : SHOTS) {
   const context = await browser.newContext({ ...s.device, timezoneId: "America/Vancouver", colorScheme: s.theme, reducedMotion: "reduce" });
   const page = await context.newPage();
   await page.clock.setFixedTime(FIXED_NOW);
