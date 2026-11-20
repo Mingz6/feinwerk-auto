@@ -8,6 +8,26 @@ reviewed: "phase-5 at 643c172, local build of the same commit"
 
 Verdict: not signed off yet. The gates are green and the demo-safety layer holds, but 5 items below must be fixed first (one public text, two copy lines, two small accessibility misses). Nothing here needs a redesign; Phase 7 can close the Must list in one pass. No code was changed in this review.
 
+## Phase 7 status
+
+Every Must item is fixed. Five Should items are fixed, two are left with a reason in `docs/decisions.md` (Phase 7).
+
+| # | Status | Commit or reason |
+|---|---|---|
+| M1 | fixed | 0f97c50: "the character class", "in Docker on a Mac", "after the diff is reviewed" |
+| M2 | fixed | 0f97c50: the link is 142 × 44 in English, 93 × 44 in French, 72 × 44 in both Chinese (probe at 390 × 844) |
+| M3 | fixed | 0f97c50: `.lost-search` gets `grid-template-columns: minmax(0, 1fr)`; scroll width 320 at 320 (was 329) |
+| M4 | fixed | 0f97c50: 「有未經計量嘅空氣入咗引擎」 |
+| M5 | fixed | 0f97c50: "avec les détails de votre voiture déjà saisis"; the English source said "with your car filled in" too and now reads "The booking opens with your car's details filled in." |
+| S1 | fixed | 0f97c50: `currencyDisplay: "narrowSymbol"` in the work order, home and make pages |
+| S2 | fixed | 0f97c50: `.btn-quiet` has a `--muted` outline |
+| S3 | left | Home is a target of about 6 screens, not a gate; Ming's photos will change the heights, so the trim and the four-language measure wait for them |
+| S4 | left | One decision each: no component sits at two widths yet (container queries), the make tiles are links (no same-page change to animate), a static demo has no real next free slot |
+| S5 | fixed | 0f97c50: Flotte, point relevé, boîte de transfert, sur place, on lit ses codes d'erreur, une rangée d'ateliers, centre de service de marque typique, 2,0 L with a no-break space, "ont toutes des panneaux", "redescendues à environ ±3 %" |
+| S6 | fixed, one left | 0f97c50: contact lead, review 5, vag.lead, 副水箱, 後泵把, 「裂咗條縫」, 睇下 in the posts too. 輪圈 → 呔鈴 left for the native reader, as the review said |
+| S7 | fixed | 0f97c50: 汽修店 (7 places), 厢式车, 「尽头的那一间」, review 5 rewritten |
+| p6 pre-review | done | English was never read in Phase 6. Read in Phase 7: Canadian spelling holds, no "dealer" or "authorized" outside key names, one line changed (M5 row). 简体中文 now has phone screenshots in both themes in `docs/screenshots/phone/` |
+
 ## How it was checked
 
 - Build and tests on 643c172: `npm ci && npm run build && npm test` exit 0, 73 pages, same counts as the Phase 5 CI run <https://github.com/Mingz6/feinwerk-auto/actions/runs/44661616559> (e2e, 48 screenshots, axe, Lighthouse all green).

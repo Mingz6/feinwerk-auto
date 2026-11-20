@@ -10,6 +10,7 @@ Live: <https://mingz6.github.io/feinwerk-auto/> · Plan: [PLAN.md](PLAN.md) · D
 <img src="docs/screenshots/home-phone-light-zh-hans.jpg" width="260" alt="Home on a phone, light theme, Simplified Chinese"> <img src="docs/screenshots/home-phone-dark-zh-hk.jpg" width="260" alt="Home on a phone, dark theme, Cantonese"> <img src="docs/screenshots/booking-phone-light-fr.jpg" width="260" alt="Booking sheet at step 3 of 4, French">
 
 Desktop in dark (English); phones in 简体中文 (light), 廣東話 (dark) and the French booking sheet at step 3. `node scripts/readme-shots.mjs` retakes them on the same fixed Wednesday 10:00 Vancouver clock as the test baselines.
+The review set, the first phone screen of Home, the BMW and MINI page and Book in every language and theme (24 shots), is in [docs/screenshots/phone/](docs/screenshots/phone/) (`--phones`).
 
 ## What it is
 
