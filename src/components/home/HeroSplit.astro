@@ -1,0 +1,27 @@
+---
+// Hero B: split. Copy on one side; the photo slot with a sample work order over it on the other.
+import type { Locale } from "../../lib/lang";
+import { useI18n } from "../../i18n";
+import Art from "../Art.astro";
+import HeroCopy from "./HeroCopy.astro";
+import WorkOrder from "./WorkOrder.astro";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const { t } = useI18n(locale);
+---
+
+<section class="hero hero-split" aria-labelledby="hero-title" data-section="hero" data-hero="split">
+  <div class="wrap hero-grid">
+    <HeroCopy locale={locale} />
+    <div class="hero-visual">
+      <figure class="photo-slot garage">
+        <Art name="lift" />
+        <figcaption class="slot-label">{t("hero.photo")}</figcaption>
+      </figure>
+      <WorkOrder locale={locale} />
+    </div>
+  </div>
+</section>

@@ -1,0 +1,22 @@
+---
+import Base from "../layouts/Base.astro";
+import BookingFlow from "../components/BookingFlow.astro";
+import type { Locale } from "../lib/lang";
+import { useI18n } from "../i18n";
+import { nb, site, tel } from "../lib/site";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const { t } = useI18n(locale);
+---
+
+<Base locale={locale} route="book" title={t("book.title", { name: site.name })} description={t("book.desc", { name: site.name })}>
+  <section class="wrap book-page">
+    <h1>{t("book.h1")}</h1>
+    <p class="lead">{t("book.lead", { phone: site.phoneDisplay })}</p>
+    <p class="actions"><a class="btn" href={`tel:${tel}`}>{nb(t("cta.call", { phone: site.phoneDisplay }))}</a></p>
+    <BookingFlow locale={locale} prefix="bk" inline />
+  </section>
+</Base>

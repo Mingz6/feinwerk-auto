@@ -1,0 +1,23 @@
+---
+import type { ComponentProps } from "astro/types";
+import Art from "./Art.astro";
+
+// Top of the plain pages: eyebrow, h1, lead, optional actions and a line drawing.
+interface Props {
+  eyebrow: string;
+  title: string;
+  lead: string;
+  art?: ComponentProps<typeof Art>["name"];
+}
+const { eyebrow, title, lead, art } = Astro.props;
+---
+
+<section class="wrap svc-hero page-head" aria-labelledby="page-title">
+  <div class="svc-hero-copy">
+    <p class="eyebrow">{eyebrow}</p>
+    <h1 id="page-title">{title}</h1>
+    <p class="lead">{lead}</p>
+    <slot />
+  </div>
+  {art && <div class="svc-visual"><Art name={art} /></div>}
+</section>

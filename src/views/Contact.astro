@@ -1,0 +1,74 @@
+---
+import Base from "../layouts/Base.astro";
+import type { Locale } from "../lib/lang";
+import { useI18n } from "../i18n";
+import type { Key } from "../i18n/en";
+import { MAKES, type Make } from "../lib/book";
+import { EMAIL_PATTERN, PHONE_PATTERN } from "../lib/forms";
+import { nb, routeUrl, site, tel } from "../lib/site";
+import PageHead from "../components/PageHead.astro";
+import Visit from "../components/Visit.astro";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const { t } = useI18n(locale);
+const makeLabel: Record<Make, Key> = { "bmw-mini": "make.bmw", "mercedes-amg": "make.mercedes", "vw-audi-porsche": "make.vag", other: "make.other" };
+---
+
+<Base locale={locale} route="contact" title={t("contact.title", { name: site.name })} description={t("contact.desc")}>
+  <PageHead eyebrow={t("contact.eyebrow")} title={t("contact.h1")} lead={t("contact.lead")} art="wrench">
+    <div class="actions">
+      <a class="btn btn-primary" href={`tel:${tel}`}>{nb(t("cta.call", { phone: site.phoneDisplay }))}</a>
+      <a class="btn btn-quiet" href={`sms:${tel}`}>{t("cta.text")}</a>
+    </div>
+  </PageHead>
+
+  <section class="section section-alt" aria-labelledby="quote-title">
+    <div class="wrap svc-form-wrap">
+      <h2 id="quote-title">{t("contact.form.h2")}</h2>
+      <p class="section-lead">{t("contact.form.lead")}</p>
+      <form class="card svc-form" method="dialog" data-demo-form data-contact-form>
+        <div class="field">
+          <label for="q-name">{t("book.name")}</label>
+          <input id="q-name" name="name" type="text" autocomplete="name" required maxlength="80" />
+        </div>
+        <div class="field">
+          <label for="q-phone">{t("book.phone")}</label>
+          <input id="q-phone" name="phone" type="tel" autocomplete="tel" required pattern={PHONE_PATTERN} maxlength="30" />
+        </div>
+        <div class="field">
+          <label for="q-email">{t("book.email")}</label>
+          <input id="q-email" name="email" type="email" autocomplete="email" pattern={EMAIL_PATTERN} maxlength="120" />
+        </div>
+        <div class="field">
+          <label for="q-make">{t("book.make")}</label>
+          <select id="q-make" name="make" autocomplete="off">
+            {MAKES.map((m) => <option value={m}>{t(makeLabel[m])}</option>)}
+          </select>
+        </div>
+        <div class="field">
+          <label for="q-model">{t("book.model")}</label>
+          <input id="q-model" name="model" type="text" autocomplete="off" maxlength="60" />
+        </div>
+        <div class="field">
+          <label for="q-symptom">{t("contact.form.symptom")}</label>
+          <textarea id="q-symptom" name="symptom" rows="5" required maxlength="2000" autocomplete="off" aria-describedby="q-symptom-hint"></textarea>
+          <p class="svc-small" id="q-symptom-hint">{t("contact.form.hint")}</p>
+        </div>
+        <p class="svc-small" data-privacy>{t("contact.form.privacy", { phone: site.phoneDisplay })} <a href={routeUrl(locale, "privacy")}>{t("privacy.link")}</a></p>
+        <p class="svc-small">{t("book.sent")}</p>
+        <button class="btn btn-primary" type="submit">{t("contact.form.submit")}</button>
+        <noscript><p class="svc-small">{t("fleet.form.nojs", { phone: site.phoneDisplay })}</p></noscript>
+      </form>
+      <div class="card svc-sent" data-demo-sent tabindex="-1" hidden>
+        <h3>{t("contact.form.sent")}</h3>
+        <p>{t("contact.form.sent.text")}</p>
+        <p>{t("book.sent")}</p>
+      </div>
+    </div>
+  </section>
+
+  <Visit locale={locale} />
+</Base>

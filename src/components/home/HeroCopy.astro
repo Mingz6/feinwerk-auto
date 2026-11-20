@@ -1,0 +1,31 @@
+---
+import type { Locale } from "../../lib/lang";
+import { useI18n, htmlLang } from "../../i18n";
+import { nb, routeUrl, site, tel } from "../../lib/site";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const { t } = useI18n(locale);
+const rating = new Intl.NumberFormat(htmlLang[locale], { minimumFractionDigits: 1 }).format(site.sample.rating);
+---
+
+<div class="hero-copy">
+  <p class="eyebrow">{t("hero.eyebrow")}</p>
+  <h1 id="hero-title">{t("home.h1")}</h1>
+  <p class="lead">{t("home.lead")}</p>
+  <ul class="chips">
+    <li class="chip" data-sample><span class="star" aria-hidden="true">★</span>{t("hero.rating", { rating })}</li>
+    <li>
+      <a class="chip chip-status" href="#visit" data-status>
+        <span class="dot" aria-hidden="true"></span><span data-status-label>{t("status.hours")}</span><span data-status-detail></span>
+      </a>
+    </li>
+  </ul>
+  <div class="actions">
+    <a class="btn btn-primary" href={routeUrl(locale, "book")}>{t("cta.book")}</a>
+    <a class="btn" href={`sms:${tel}`}>{t("cta.text")}</a>
+    <a class="btn btn-quiet phone" href={`tel:${tel}`}>{nb(site.phoneDisplay)}</a>
+  </div>
+</div>

@@ -1,0 +1,41 @@
+---
+import Base from "../layouts/Base.astro";
+import type { Locale } from "../lib/lang";
+import { htmlLang, useI18n } from "../i18n";
+import { routeUrl, site } from "../lib/site";
+import { POSTS, postText, postTitle, readMinutes } from "../data/posts";
+import { postBody } from "../lib/posts";
+import PageHead from "../components/PageHead.astro";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const { t } = useI18n(locale);
+const lang = htmlLang[locale];
+const date = new Intl.DateTimeFormat(lang, { dateStyle: "medium", timeZone: "UTC" });
+const num = new Intl.NumberFormat(lang);
+---
+
+<Base locale={locale} route="blog" title={t("blog.title", { name: site.name })} description={t("blog.desc")}>
+  <PageHead eyebrow={t("blog.eyebrow")} title={t("blog.h2")} lead={t("blog.lead")} />
+
+  <div class="section section-alt">
+    <div class="wrap">
+      <h2 class="vh">{t("blog.eyebrow")}</h2>
+      <ul class="posts posts-all">
+        {
+          POSTS.map((p) => (
+            <li class="card post">
+              <p class="post-meta mono">
+                <time datetime={p.date}>{date.format(new Date(p.date))}</time> · {t("blog.read", { min: num.format(readMinutes(postBody(locale, p.slug).raw)) })}
+              </p>
+              <h3><a href={routeUrl(locale, `blog/${p.slug}`)}>{t(postTitle(p))}</a></h3>
+              <p>{t(postText(p))}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</Base>
