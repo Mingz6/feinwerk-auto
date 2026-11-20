@@ -6,3 +6,10 @@ dist/
 research/
 # Real contact details for showing an owner in person (HYK pattern). Never deployed.
 src/data/site.private.json
+test-results/
+playwright-report/
+.lighthouseci/
+shots/
+.tmp/
+tests/e2e/__screenshots__/*
+!tests/e2e/__screenshots__/linux/
