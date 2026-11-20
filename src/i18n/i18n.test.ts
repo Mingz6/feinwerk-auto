@@ -66,3 +66,36 @@ test("no hard-coded words in components, views, layouts or the 404", () => {
     assert.deepEqual([...attrs, ...words], [], file);
   }
 });
+
+// Common characters that exist in only one script. The two Chinese sources are written separately
+// (PLAN.md: no converter), so a stray character from the other script is a copy-paste slip.
+const SIMPLIFIED_ONLY = /[们这说时间车预约话电务维检价钱联让还进过样点发动机为么会对现开关门问题东长书买卖认识听写读请谢应该没给轮换灯线气压节网页码号单张项质满实际签经历证报]/u;
+const TRADITIONAL_ONLY = /[們這說時間車預約話電務維檢價錢聯讓還進過樣點發動機為麼會對現開關門問題東長書買賣認識聽寫讀請謝應該沒給輪換燈線氣壓節網頁碼號單張項質滿實際簽經歷證報]/u;
+const CANTONESE_ONLY = /[嘅哋唔咗喺嚟冇啲嗰係佢睇揸攞搵]/u;
+const posts = (locale: string) => readdirSync(join("src/content/blog", locale)).map((f) => readFileSync(join("src/content/blog", locale, f), "utf8"));
+
+test("every post exists in all four languages", () => {
+  const en = readdirSync("src/content/blog/en").sort();
+  for (const locale of ["fr", "zh-hans", "zh-hk"]) assert.deepEqual(readdirSync(join("src/content/blog", locale)).sort(), en, locale);
+});
+
+test("廣東話 is Traditional written Cantonese, and 简体中文 is Simplified Mandarin, in dictionaries and posts", () => {
+  const hk = [...Object.entries(zhHk), ...posts("zh-hk").map((p, i) => [`post ${i}`, p])];
+  for (const [key, value] of hk) assert.doesNotMatch(value, SIMPLIFIED_ONLY, `zh-hk ${key}`);
+  const hans = [...Object.entries(zhHans), ...posts("zh-hans").map((p, i) => [`post ${i}`, p])];
+  for (const [key, value] of hans) {
+    assert.doesNotMatch(value, TRADITIONAL_ONLY, `zh-hans ${key}`);
+    assert.doesNotMatch(value, CANTONESE_ONLY, `zh-hans ${key}`);
+  }
+  // Mandarin grammar words have Cantonese ones on this site: 我們→我哋, 這→呢, 沒有→冇, 什麼→乜嘢/咩.
+  for (const [key, value] of hk) assert.doesNotMatch(value, /我們|你們|他們|這|沒有|什麼|甚麼/u, `zh-hk ${key}`);
+  for (const p of posts("zh-hk")) for (const w of ["我哋", "嘅", "唔", "係"]) assert.ok(p.includes(w), `a zh-hk post has no ${w}`);
+});
+
+test("one Chinese name for the mountain and snowflake symbol, on the tires page and in the post", () => {
+  for (const [dict, posts_, term] of [[zhHans, posts("zh-hans"), "三峰山雪花标志"], [zhHk, posts("zh-hk"), "三峰山雪花標誌"]] as const) {
+    const all = [...Object.values(dict), ...posts_].join("\n");
+    assert.ok(dict["tires.rules.1"].includes(term), term);
+    assert.doesNotMatch(all, /雪山雪花|三峰山同雪花|三峰山和雪花/u);
+  }
+});

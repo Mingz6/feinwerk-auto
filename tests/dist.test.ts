@@ -273,14 +273,12 @@ for (const x of ["", "fr/", "zh-hans/", "zh-hk/"]) {
     for (const s of ["misfire-vacuum-leak", "mercedes-service-a-b", "bc-winter-tires"]) assert.ok(html.includes(`href="${BASE}${x}blog/${s}/"`), s);
   });
 
-  // Phases 3a and 3b translated the French and 简体中文 posts; 廣東話 shows the English body until 3c.
-  const translated = x === "" || x === "fr/" || x === "zh-hans/";
-  test(`${x}blog posts: ${translated ? "own body, no fallback note" : "English body marked as English until Phase 3"}`, () => {
+  // Phases 3a to 3c translated every post, so no page shows the English body or the fallback note.
+  test(`${x}blog posts: own body, no fallback note`, () => {
     for (const s of ["misfire-vacuum-leak", "mercedes-service-a-b", "bc-winter-tires"]) {
       const html = read(`${x}blog/${s}/index.html`);
-      assert.equal(html.includes("data-post-fallback"), !translated, s);
-      if (translated) assert.match(html, /<div class="post-body">/, s);
-      else assert.match(html, /<div class="post-body" lang="en-CA">/, s);
+      assert.ok(!html.includes("data-post-fallback"), s);
+      assert.match(html, /<div class="post-body">/, s);
     }
   });
 }
@@ -317,10 +315,29 @@ test("the 3 简体中文 posts carry their key terms, with Chinese punctuation a
   const ab = body("mercedes-service-a-b");
   for (const w of ["Service A", "Service B", "刹车油", "空调滤清器", "16,000 公里", "MB 229.5"]) assert.ok(ab.includes(w), w);
   const tires = body("bc-winter-tires");
-  for (const w of ["10 月 1 日至 4 月 30 日", "3.5 毫米", "M+S", "雪山雪花", "冬季轮胎", "7 °C"]) assert.ok(tires.includes(w), w);
+  for (const w of ["10 月 1 日至 4 月 30 日", "3.5 毫米", "M+S", "三峰山雪花标志", "冬季轮胎", "7 °C"]) assert.ok(tires.includes(w), w);
   for (const t of [misfire, ab, tires]) assert.doesNotMatch(t, /\p{Script=Han}[,.:;?!()]|[,:;?!(]\p{Script=Han}/u, "half-width punctuation next to Chinese");
   // About 900 characters each: 2 minutes at 400 a minute, not the "1 min" that counting spaces gives.
   for (const s of ["misfire-vacuum-leak", "mercedes-service-a-b", "bc-winter-tires"]) assert.match(text(page(s)), /2 分钟/, s);
+});
+
+test("the 3 廣東話 posts are written Cantonese in Traditional characters, with their key terms and reading time", () => {
+  const page = (s: string) => read(`zh-hk/blog/${s}/index.html`);
+  const body = (s: string) => text(page(s).match(/<div class="post-body"[\s\S]*?<div class="card post-cta">/)![0]);
+  const misfire = body("misfire-vacuum-leak");
+  for (const w of ["燃油修正", "煙霧測試", "失火", "+18%", "2,500 轉"]) assert.ok(misfire.includes(w), w);
+  const ab = body("mercedes-service-a-b");
+  for (const w of ["Service A", "Service B", "煞車油", "冷氣隔塵網", "16,000 公里", "MB 229.5"]) assert.ok(ab.includes(w), w);
+  const tires = body("bc-winter-tires");
+  for (const w of ["10 月 1 日至 4 月 30 日", "3.5 毫米", "M+S", "三峰山雪花標誌", "雪呔", "7 °C"]) assert.ok(tires.includes(w), w);
+  for (const t of [misfire, ab, tires]) {
+    assert.doesNotMatch(t, /\p{Script=Han}[,.:;?!()]|[,:;?!(]\p{Script=Han}/u, "half-width punctuation next to Chinese");
+    for (const w of ["我哋", "嘅", "唔"]) assert.ok(t.includes(w), `written Cantonese: ${w}`);
+  }
+  for (const s of ["misfire-vacuum-leak", "mercedes-service-a-b", "bc-winter-tires"]) {
+    assert.match(page(s), /<html lang="zh-HK"/, s);
+    assert.match(text(page(s)), /大約 2 分鐘睇完/, s);
+  }
 });
 
 test("404: search box, Call and Book; no canonical, hreflang, og:url or language redirect", () => {

@@ -18,6 +18,21 @@ export const layoutFaults = (page: Page) =>
       const r = el.getBoundingClientRect();
       if (r.right > vw + 1 || r.left < -1) out.push(`off screen: ${name(el)} ${Math.round(r.left)}..${Math.round(r.right)} of ${vw}`);
     }
+    // Inline links have no clientWidth, so they get their own check: each line box stays on screen
+    // and inside the nearest ancestor that clips. Links in a sideways-scrolling row scroll on purpose.
+    for (const el of document.querySelectorAll("a")) {
+      if (el.matches(".btn, .chip, .choice, .bottom-bar a, .header-nav a") || !visible(el) || el.closest(".vh, [hidden], dialog:not([open])")) continue;
+      let clip: Element | null = null;
+      for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) {
+        if (getComputedStyle(p).overflowX !== "visible") { clip = p; break; }
+      }
+      if (clip && /auto|scroll/.test(getComputedStyle(clip).overflowX)) continue;
+      const box = clip?.getBoundingClientRect();
+      const left = Math.max(0, box?.left ?? 0);
+      const right = Math.min(vw, box?.right ?? vw);
+      const cut = [...el.getClientRects()].some((r) => r.width > 0 && (r.right > right + 1 || r.left < left - 1));
+      if (cut) out.push(`link cut off: ${name(el)} in ${Math.round(left)}..${Math.round(right)}`);
+    }
     for (const el of document.querySelectorAll('a[href^="tel:"], .phone')) {
       if (!visible(el) || el.closest(".vh, [hidden], dialog:not([open])")) continue;
       const lines = new Set([...el.getClientRects()].filter((r) => r.width > 0).map((r) => Math.round(r.top)));
