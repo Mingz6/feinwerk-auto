@@ -115,7 +115,7 @@
   .btn:hover { background: var(--surface); }
   .btn-primary { background: var(--button); border-color: var(--button); color: var(--button-text); }
   .btn-primary:hover { background: var(--button); filter: brightness(1.08); }
-  .btn-quiet { border-color: transparent; font-family: var(--font-mono), var(--cjk, monospace); font-weight: 500; }
+  .btn-quiet { border-color: var(--muted); font-family: var(--font-mono), var(--cjk, monospace); font-weight: 500; }
   .btn-sm { min-height: var(--tap); padding-block: 0.375rem; margin-inline-start: 0.5rem; }
   .actions { display: flex; flex-wrap: wrap; gap: 0.625rem; }
 
@@ -227,6 +227,7 @@
   .callouts li { counter-increment: c; display: flex; gap: 0.625rem; align-items: baseline; }
   .callouts li::before { content: counter(c); flex: none; display: inline-grid; place-items: center; width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--signal); color: var(--bg); font: 700 0.8125rem/1 var(--font-mono); }
   .proof-side { display: grid; gap: 1rem; align-content: start; }
+  .proof-side h3 a { display: inline-flex; align-items: center; min-height: var(--tap); }
   @media (min-width: 48rem) { .reviews { grid-template-columns: 1fr; } }
   .review { display: grid; gap: 0.5rem; }
   .review-meta { display: flex; justify-content: space-between; color: var(--muted); font-size: 0.875rem; }
@@ -483,7 +484,7 @@
   .lost-page { padding-block: 2rem 3rem; }
   .lost-page h1 { font-size: clamp(2rem, 8vw, 3.5rem); }
   .lost-page .lost { margin-block: 1rem 1.5rem; padding: 0; list-style: none; display: grid; gap: 0.25rem; }
-  .lost-search { display: grid; gap: 0.375rem; max-width: 32rem; margin-top: 2rem; }
+  .lost-search { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.375rem; max-width: 32rem; margin-top: 2rem; }
   .lost-search label { font-weight: 600; }
   .lost-row { display: flex; gap: 0.5rem; }
   .lost-row input { flex: 1; min-width: 0; min-height: var(--tap); padding: 0.5rem 0.75rem; font: inherit; font-size: 1rem; color: var(--text); background: var(--bg); border: var(--hairline) solid var(--muted); border-radius: var(--radius); }

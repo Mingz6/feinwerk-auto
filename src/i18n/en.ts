@@ -188,7 +188,7 @@ export const en = {
   "svc.book": "Book this",
   "svc.note": "Prices are samples for this demo. Parts, labour and tax vary by car.",
   "svc.other.h2": "Not on the list?",
-  "svc.other.text": "Tell us what you hear, feel or see. We book a diagnosis with your car filled in.",
+  "svc.other.text": "Tell us what you hear, feel or see. The booking opens with your car's details filled in.",
   "svc.other.cta": "Book a diagnosis",
   "svc.more": "More services",
   "bmw.title": "BMW and MINI repair in Vancouver | {name}",

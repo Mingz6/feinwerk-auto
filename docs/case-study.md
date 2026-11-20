@@ -40,9 +40,9 @@ Every push runs the same checks: type check, 778 unit, build-output and docs tes
 
 - **A layout shift that passed 2 runs out of 3.** Lighthouse measured CLS (Cumulative Layout Shift) 0.508 on the booking page in one run: the script hid steps 2 to 4 after the first paint whenever the paint won the race. CSS now hides them up front. Lighthouse CI had passed it because its default takes the best of 3 runs, so layout shift and page weight now have to pass on every run.
 - **A page 658 px wide on a 390 px phone.** A visually hidden "5 out of 5" escaped the review row and widened every home page in all four languages. Chrome didn't scroll, but iOS Safari can pan a page that wide. A test now checks the width of every home page.
-- **A phone pattern browsers ignored.** The `pattern` attribute compiles with the regex `v` flag, where my character class was invalid, so browsers silently dropped it. The patterns now live in one file shared by the browser and the validator.
+- **A phone pattern browsers ignored.** The `pattern` attribute compiles with the regex `v` flag, where the character class was invalid, so browsers silently dropped it. The patterns now live in one file shared by the browser and the validator.
 - **Two clocks that disagree.** Node 26 and Chromium 159 ship time-zone databases that disagree about BC after November 2026. The slot tests check only what both agree on, and slots stay wall-clock times until the calendar file turns one into an instant.
-- **Screenshots that differ by 1%.** The same Playwright image in Docker on my Mac rendered font edges about 1% differently from GitHub's runner on 44 of 48 shots. The baselines are CI's own renders, copied from a run's artifact after I review the diff.
+- **Screenshots that differ by 1%.** The same Playwright image in Docker on a Mac rendered font edges about 1% differently from GitHub's runner on 44 of 48 shots. The baselines are CI's own renders, copied from a run's artifact after the diff is reviewed.
 
 ## Results
 

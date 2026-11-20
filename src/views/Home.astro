@@ -36,7 +36,7 @@ const services = [
   { key: "carplay", href: routeUrl(locale, "carplay-retrofit"), art: "screen" },
 ] as const;
 const date = new Intl.DateTimeFormat(lang, { dateStyle: "medium", timeZone: "UTC" });
-const money = new Intl.NumberFormat(lang, { style: "currency", currency: "CAD", maximumFractionDigits: 0 });
+const money = new Intl.NumberFormat(lang, { style: "currency", currency: "CAD", currencyDisplay: "narrowSymbol", maximumFractionDigits: 0 });
 const rows = ["price", "talk", "parts"] as const;
 // Monday first on the page; site.json is Sunday first.
 ---

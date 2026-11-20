@@ -20,7 +20,7 @@ On a bouché l'admission et on y a envoyé de la fumée à basse pression avec u
 
 ## La réparation
 
-Un tuyau, environ une demi-heure de main-d'œuvre, puis on a effacé les adaptations de carburant et roulé vingt minutes avec la voiture. Les corrections au ralenti se sont stabilisées à environ 3 % de zéro, et les ratés ont cessé. Avant de poser la pièce, on a envoyé au propriétaire une photo de la fissure à côté du tuyau neuf, comme pour chaque ligne d'un bon de travail.
+Un tuyau, environ une demi-heure de main-d'œuvre, puis on a effacé les adaptations de carburant et roulé vingt minutes avec la voiture. Les corrections au ralenti sont redescendues à environ ±3 %, et les ratés ont cessé. Avant de poser la pièce, on a envoyé au propriétaire une photo de la fissure à côté du tuyau neuf, comme pour chaque ligne d'un bon de travail.
 
 Les quatre bobines n'étaient pas tout à fait de l'argent perdu : elles arrivaient en fin de vie. Mais ce n'était pas le problème.
 

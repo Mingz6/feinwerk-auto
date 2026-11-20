@@ -4,7 +4,7 @@ Chaque mois d'octobre, les mêmes questions reviennent : quand faut-il des pneu
 
 Sur la plupart des routes désignées de la Colombie-Britannique, les pneus d'hiver sont obligatoires sur les véhicules de promenade **du 1er octobre au 30 avril**. Sur certaines routes de la côte, la période finit plus tôt. La règle s'applique là où les panneaux sont installés : c'est le panneau au début de la route qui compte. Avant un trajet, vérifiez la route sur DriveBC.
 
-En ville, il n'y a pas d'obligation générale. Mais la Sea-to-Sky, la Coquihalla et la route des centres de ski ont toutes les panneaux, et bien des conducteurs de Vancouver les prennent chaque hiver.
+En ville, il n'y a pas d'obligation générale. Mais la Sea-to-Sky, la Coquihalla et la route des centres de ski ont toutes des panneaux, et bien des conducteurs de Vancouver les prennent chaque hiver.
 
 ## Ce qui compte comme pneu d'hiver
 
