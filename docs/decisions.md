@@ -105,3 +105,16 @@ PLAN.md's Decisions are settled; they are repeated here so each can be revisited
 - **The Chinese stack reaches mono and display text.** `:lang()` sets `--cjk`, and every `--font-mono` and `--font-display` stack ends with `var(--cjk, …)`. Before, eyebrows, tags, footer titles and the post date fell back to whatever the browser picked. The `:lang()` font-family rules stay, so a 简体中文 link in the menu of an English page still gets its own stack (custom properties resolve where declared, and inherited font-family doesn't re-resolve).
 - **`text-wrap: pretty` on paragraphs and list items; `balance` on the demo strip.** Chinese can break between any two characters, so the home lead left "认。" alone on a line at 1440. Browsers without `pretty` wrap as before.
 - **Layout faults are a shared helper** (`tests/e2e/layout.ts`), so French and Chinese run the same checks; 廣東話 can reuse it in 3c.
+
+## Phase 3c: 廣東話
+
+- **Written Cantonese throughout, a few formal words kept in the privacy text.** Grammar words are Cantonese (我哋, 嘅, 唔, 係, 冇, 喺, 呢, 嗰, 咗); 適用於, 披露 and 撤回同意 stay because a Hong Kong privacy notice uses them. An i18n test fails on 我們, 這, 沒有 or 什麼 in the dictionary or posts.
+- **Posts written from the English, not from the 简体中文.** Same facts and hedges; HK car words where they differ from Mandarin: 呔, 雪呔, 失火, 煞車油, 冷氣隔塵網, 軚盤, 死氣喉, 波箱.
+- **One term per English term**, from a proofread against English: 車呔 (tire, 呔 in verbs like 換呔), 避震 (suspension; 懸吊 is the Taiwan word), 油格 (filter), 維修位 (bay; 車位 means parking), 故障診斷 (diagnosis), 吊機 (lift), 輪圈 (rim), 毫米 (mm), 三峰山雪花標誌 (mountain and snowflake).
+- **Brands stay in Latin: Mercedes-Benz, not 平治.** Hong Kong says 平治 and 寶馬, but every other string already writes the brand, the make labels and booking confirmation need it, and 简体中文 made the same call. A native reader may want 平治 in running text: Open for the native-speaker pass.
+- **保養 means both maintenance and warranty**, as it does on Hong Kong shop signs (保養期). The warranty page and the A/B post's 新車原廠保養期 keep it; 保用 would be a second word for one thing.
+- **Hong Kong's own clock: 上午/下午 and 12 hours** ("下午3:30"), straight from `Intl` with `zh-HK`. 简体中文 keeps 24 hours. The Cantonese e2e test checks both the time choices and the confirmation line.
+- **Script tests both ways.** Each Chinese source is written on its own, so a character from the other script is a slip: zh-hk may not contain common Simplified-only characters, and zh-hans may not contain Traditional-only or Cantonese-only ones (嘅, 哋, 唔…).
+- **One Chinese name for the mountain and snowflake symbol** (p3b pre-review): 三峰山雪花标志 / 標誌 on the tires page and in the post, with a test that rejects 雪山雪花 and 三峰山和雪花.
+- **The layout check covers inline links** (p3a and p3b pre-review). Inline links have no clientWidth, so each line box must stay on screen and inside the nearest clipping ancestor; links in a sideways-scrolling row are skipped because they scroll on purpose. A test feeds it an over-long link at 390 px to prove it fires.
+- **`chinese.spec.ts` runs every check for both Chinese languages** from one table (prefix, dictionary, font, clock), rather than a copied file per language.
