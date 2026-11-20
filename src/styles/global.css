@@ -404,6 +404,8 @@
   .book-form fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
   .book-step { display: grid; gap: 1rem; }
   .book-step[hidden] { display: none; }
+  /* With JavaScript the flow starts on step 1: hide the rest before first paint, not after (CLS 0.5 on /book/). booking.ts sets data-ready. */
+  .js [data-book-form]:not([data-ready]) > .book-step:not([data-step="0"]) { display: none; }
   .book-step > legend { font-family: var(--font-display), var(--cjk, sans-serif); font-weight: 700; font-size: 1.25rem; margin-bottom: 0.75rem; }
   .book-progress { font-size: 0.8125rem; color: var(--muted); }
   .book-label { font-weight: 600; margin-bottom: 0.5rem; }

@@ -203,3 +203,28 @@ test("axe: the open sheet, each step and the confirmation, in both themes", asyn
     await scan();
   }
 });
+
+test("/book/ paints step 1 alone before the script runs, so nothing shifts when it does (Lighthouse saw CLS 0.5)", async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem("feinwerk-lang", "en"));
+  // Hold back the bundled scripts: what shows now is what the first paint shows. The inline head script still adds .js.
+  await page.route(/\.js$/, (route) => route.abort());
+  await page.goto("book/");
+  await expect(page.locator("html")).toHaveClass(/\bjs\b/);
+  await expect(page.locator("[data-step='0']")).toBeVisible();
+  for (const n of [1, 2, 3]) await expect(page.locator(`[data-step='${n}']`)).toBeHidden();
+  await expect(page.locator("[data-book-progress]")).toHaveText("Step 1 of 4");
+});
+
+test("/book/ with JavaScript: no layout shift from load to the ready flow", async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("feinwerk-lang", "en");
+    const w = window as unknown as { __cls: number };
+    w.__cls = 0;
+    new PerformanceObserver((list) => {
+      for (const e of list.getEntries() as unknown as { value: number; hadRecentInput: boolean }[]) if (!e.hadRecentInput) w.__cls += e.value;
+    }).observe({ type: "layout-shift", buffered: true });
+  });
+  await page.goto("book/", { waitUntil: "networkidle" });
+  await expect(page.locator("[data-book-form][data-ready]")).toHaveCount(1);
+  expect(await page.evaluate(() => (window as unknown as { __cls: number }).__cls)).toBeLessThan(0.01);
+});

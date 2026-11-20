@@ -59,6 +59,7 @@ export const booking = (strings: ClientStrings) => {
   const show = (i: number, focus = true) => {
     current = i;
     steps.forEach((s, j) => (s.hidden = j !== i));
+    form.dataset.ready = "";
     form.querySelector("[data-book-progress]")!.textContent = fill(strings.book.step, { n: i + 1, total: steps.length });
     if (focus) (steps[i].querySelector<HTMLElement>("input:checked") ?? steps[i].querySelector<HTMLElement>("input, select, textarea"))?.focus();
   };

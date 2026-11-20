@@ -29,7 +29,7 @@ const Wrap = inline ? "dialog" : "div";
 <div class="book-flow" data-book-flow>
   <Wrap class={inline ? "book-inline" : "book-wrap"} open={inline || undefined} aria-label={inline ? t("book.h1") : undefined}>
     <form class="book-form" method="dialog" data-book-form aria-label={t("book.h1")}>
-      <p class="book-progress mono" data-js-only data-book-progress aria-live="polite"></p>
+      <p class="book-progress mono" data-js-only data-book-progress aria-live="polite">{t("book.step", { n: 1, total: 4 })}</p>
       <fieldset class="book-step" data-step="0">
         <legend>{`1 · ${t("book.s1")}`}</legend>
         <fieldset class="book-choices">
