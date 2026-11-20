@@ -17,6 +17,12 @@ const disclaimers: Record<string, string> = {
   "zh-Hans": zhHans["footer.disclaimer"],
   "zh-HK": zhHk["footer.disclaimer"],
 };
+const sources: Record<string, string> = {
+  "en-CA": en["footer.source"],
+  "fr-CA": fr["footer.source"],
+  "zh-Hans": zhHans["footer.source"],
+  "zh-HK": zhHk["footer.source"],
+};
 const strips: Record<string, string> = {
   "en-CA": en["strip.label"],
   "fr-CA": fr["strip.label"],
@@ -60,6 +66,14 @@ for (const file of pages) {
     const p = footer.match(/<p\b[^>]*\bdata-disclaimer\b[^>]*>([\s\S]*?)<\/p>/);
     assert.ok(p, "no disclaimer in <footer>");
     assert.equal(decode(p[1]).trim(), disclaimers[lang], lang);
+  });
+
+  test(`${name}: footer links the public repo, in English, labelled in the page language`, () => {
+    const footer = html.match(/<footer\b[\s\S]*?<\/footer>/)?.[0] ?? "";
+    const a = footer.match(/<p\b[^>]*\bdata-source\b[^>]*><a href="([^"]+)" hreflang="en">([\s\S]*?)<\/a><\/p>/);
+    assert.ok(a, "no source link in <footer>");
+    assert.equal(a[1], "https://github.com/Mingz6/feinwerk-auto");
+    assert.equal(decode(a[2]).trim(), sources[lang], lang);
   });
 
   test(`${name}: every root-relative URL is under ${BASE}`, () => {

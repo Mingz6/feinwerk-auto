@@ -281,8 +281,9 @@
   .footer-hours li { display: flex; justify-content: space-between; gap: 0.5rem; }
   .footer-links { display: grid; }
   .footer-links a { display: inline-flex; align-items: center; min-height: var(--tap); }
-  .disclaimer { max-width: 48rem; font-size: 0.875rem; }
-  @media (min-width: 48rem) { .footer-grid { grid-template-columns: repeat(3, 1fr); } .disclaimer { grid-column: 1 / -1; } }
+  .disclaimer, .source { max-width: 48rem; font-size: 0.875rem; }
+  .source a { display: inline-flex; align-items: center; min-height: var(--tap); }
+  @media (min-width: 48rem) { .footer-grid { grid-template-columns: repeat(3, 1fr); } .disclaimer, .source { grid-column: 1 / -1; } }
 
   /* Bottom action bar: phones only */
   .bottom-bar {

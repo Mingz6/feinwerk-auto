@@ -18,6 +18,7 @@ export const fr = {
   "footer.contact": "Coordonnées (exemple)",
   "footer.address": "Adresse",
   "footer.phone": "Téléphone",
+  "footer.source": "Comment ce site a été conçu\u00a0: code source et notes sur GitHub (en anglais)",
   "footer.disclaimer":
     "Feinwerk Auto est une entreprise fictive créée pour un concept de design. Elle n'est affiliée à aucune entreprise ni à aucun constructeur automobile. Les noms de marques décrivent seulement les véhicules entretenus. Les avis, la note et les prix sont des exemples.",
   "home.title": "{name} | Réparation de voitures européennes à Vancouver",

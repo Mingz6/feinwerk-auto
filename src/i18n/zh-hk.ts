@@ -19,6 +19,7 @@ export const zhHk = {
   "footer.contact": "聯絡資料（示例）",
   "footer.address": "地址",
   "footer.phone": "電話",
+  "footer.source": "呢個網站點樣整：GitHub 上面嘅原始碼同說明（英文）",
   "footer.disclaimer":
     "Feinwerk Auto 係為設計概念虛構嘅商舖，同任何公司或者汽車廠商都冇關係。品牌名淨係用嚟講明我哋維修邊啲車。評價、評分同價錢全部都係示例。",
   "home.title": "{name} | 溫哥華歐洲車維修",

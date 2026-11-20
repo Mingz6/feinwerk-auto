@@ -18,6 +18,7 @@ export const zhHans = {
   "footer.contact": "联系方式（示例）",
   "footer.address": "地址",
   "footer.phone": "电话",
+  "footer.source": "本网站的制作过程：GitHub 上的源代码和说明（英文）",
   "footer.disclaimer":
     "Feinwerk Auto 是为设计概念虚构的商家，与任何公司或汽车制造商均无关联。品牌名称仅用于说明维修的车型。评价、评分和价格均为示例。",
   "home.title": "{name} | 温哥华欧洲车维修",
