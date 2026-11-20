@@ -8,7 +8,10 @@ PLAN.md's Decisions are settled; they are repeated here so each can be revisited
 - **Astro 7 on GitHub Pages, no client framework.** Same stack as HYK, so its language detection, theme and test code carry over; static output keeps JavaScript small and hosting free.
 - **Four separate dictionaries, Cantonese tagged `zh-HK`.** Cantonese isn't Mandarin in other characters, so a converter would produce wrong text; `yue` isn't accepted in hreflang.
 - **Explicit light and dark tokens, no `light-dark()`.** iOS Safari before 17.5 ignores it, which is inside the support range.
-- **Booking ships with a `demo` provider behind an interface.** No real calendar; the interface shows how Tekmetric or a form service plugs in.
+- **The booking flow ships with a `demo` provider behind an interface.** No real calendar; the interface shows how Tekmetric or a form service plugs in.
+
+- **Taiwan readers get Cantonese text in Traditional characters.** PLAN's detection order sends `zh-TW` to 廣東話, an accepted trade-off for a Vancouver audience; standard written Traditional isn't a fifth language.
+- **SEO isn't gated in Lighthouse.** `noindex` caps it on purpose, so the site never shows a fictional shop in search results.
 
 ## Phase 0
 
@@ -128,3 +131,13 @@ PLAN.md's Decisions are settled; they are repeated here so each can be revisited
 - **Share cards are drawn, not photographed.** `scripts/share-cards.mjs` renders a 1200x630 card per language (brand, tagline, the lift drawing, the "Design concept" label) and the 180x180 apple-touch-icon with Playwright, on a Mac so the Chinese cards use PingFang. The PNGs are committed; a dist test checks every page points at its own language's card and each file's size.
 - **Print and no-JavaScript have their own tests.** Print: light colours under a stored dark theme, hours, address and phone kept, bars and menus gone, and the booking summary without the form. No JavaScript: in each language, Home reads, the menu opens, a make tile and the bottom bar's Book reach real pages, and /book/ shows all four steps.
 - **廣東話 calls a spark plug 火嘴** (p3c pre-review): the dictionary said 火花塞 and the posts 火嘴. 火嘴 is the word on Hong Kong shop floors and matches the colloquial terms already chosen (車呔, 避震, 油格). A test rejects 火花塞 in zh-HK.
+
+## Phase 5: ship and show
+
+- **The footer links the public repo** ("How this site was built: source code and notes on GitHub"), in all four languages, with `hreflang="en"` and "(English)" in the other labels, because the README is English. A portfolio visitor who lands on the demo can find the README, the decisions and the case study. A dist test checks the link and its label on all 73 pages. It made every page 64 px taller; the 48 baselines were updated from CI's run after a row-by-row check that nothing above the footer moved.
+- **README numbers come from the live site**, mobile, Slow 4G and 4× CPU (the `lighthouserc.json` settings), median of 3 per page, with the Lighthouse version and date. CI's numbers come from a local preview on the runner and stay in the run log.
+- **README screenshots are viewport JPEGs, not the baselines.** The baselines are full-page PNGs (14 MB for 48) rendered by CI's fonts. `scripts/readme-shots.mjs` takes four shots, one per language, both themes, phone and desktop, on the baselines' fixed Wednesday 10:00 clock, about 100 KB each. They live in `docs/screenshots/`, outside `public/`, so they never deploy and the dist image allowlist is unchanged.
+- **The case study is a draft in the mingz.dev project-page format** (`docs/case-study.md`, `draft: true`), so `/showcase` copies it into the portfolio and only the image paths and the draft flag change there.
+- **Every Decision in PLAN.md is mirrored above, word for word in bold,** and `tests/docs.test.ts` fails if one goes missing or PLAN.md gains one that isn't copied here.
+- **The demo-safety grep runs on text files (`git grep -I`).** Without `-I` one of the patterns matched four random bytes inside a compressed screenshot PNG; that is noise, not a name, and a binary can't carry readable text the grep is looking for.
+- **No native speaker has read the French or 廣東話 yet.** The proofreads so far compared each dictionary with the English. The README and the case study both list it as open, with the real-device pass and the photos.
