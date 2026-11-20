@@ -92,6 +92,12 @@ test("廣東話 is Traditional written Cantonese, and 简体中文 is Simplified
   for (const p of posts("zh-hk")) for (const w of ["我哋", "嘅", "唔", "係"]) assert.ok(p.includes(w), `a zh-hk post has no ${w}`);
 });
 
+test("廣東話 calls a spark plug 火嘴 everywhere, the word Hong Kong mechanics use", () => {
+  const all = [...Object.values(zhHk), ...posts("zh-hk")].join("\n");
+  assert.ok(zhHk["bmw.s55.job"].includes("火嘴"));
+  assert.doesNotMatch(all, /火花塞/u);
+});
+
 test("one Chinese name for the mountain and snowflake symbol, on the tires page and in the post", () => {
   for (const [dict, posts_, term] of [[zhHans, posts("zh-hans"), "三峰山雪花标志"], [zhHk, posts("zh-hk"), "三峰山雪花標誌"]] as const) {
     const all = [...Object.values(dict), ...posts_].join("\n");
