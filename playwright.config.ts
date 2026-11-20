@@ -2,7 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 
 // PW_PORT picks another port when 4321 is taken (another checkout's preview would otherwise be reused).
 const PORT = Number(process.env.PW_PORT ?? 4321);
-// PW_BASE_URL points at a server that is already running (the Docker baseline run reaches the host's preview).
+// PW_BASE_URL points at a server that is already running, the live site included (then no preview starts).
 const BASE_URL = process.env.PW_BASE_URL ?? `http://localhost:${PORT}/feinwerk-auto/`;
 
 export default defineConfig({
@@ -18,7 +18,7 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   projects: [
-    { name: "e2e", testMatch: /(theme|lang|home|services|booking|pages|french|chinese|print|share)\.spec\.ts/, use: { ...devices["Desktop Chrome"] } },
+    { name: "e2e", testMatch: /(theme|lang|home|services|booking|pages|french|chinese|print|nojs)\.spec\.ts/, use: { ...devices["Desktop Chrome"] } },
     { name: "axe", testMatch: /a11y\.spec\.ts/, use: { ...devices["Desktop Chrome"] } },
     { name: "visual", testMatch: /visual\.spec\.ts/, use: { ...devices["Desktop Chrome"] } },
   ],
