@@ -340,6 +340,22 @@ test("the 3 廣東話 posts are written Cantonese in Traditional characters, wit
   }
 });
 
+test("every page but the 404 links its 4 language versions and x-default, and each target exists", () => {
+  const SITE = "https://mingz6.github.io/feinwerk-auto/";
+  const prefixes = { en: "", fr: "fr/", "zh-Hans": "zh-hans/", "zh-HK": "zh-hk/", "x-default": "" } as const;
+  for (const file of pages) {
+    const name = relative(DIST, file).replaceAll("\\", "/");
+    if (name === "404.html") continue;
+    const route = name.replace(/^(fr|zh-hans|zh-hk)\//, "").replace(/index\.html$/, "");
+    const links = [...read(name).matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)">/g)].map((m) => [m[1], m[2]]);
+    assert.deepEqual(links.map(([l]) => l), Object.keys(prefixes), name);
+    for (const [lang, href] of links) {
+      assert.equal(href, SITE + prefixes[lang as keyof typeof prefixes] + route, `${name} ${lang}`);
+      assert.ok(existsSync(join(DIST, href.slice(SITE.length), "index.html")), `${name} ${lang} → ${href}`);
+    }
+  }
+});
+
 test("404: search box, Call and Book; no canonical, hreflang, og:url or language redirect", () => {
   const html = read("404.html");
   assert.match(html, /<form\b[^>]*role="search"[^>]*>/);
