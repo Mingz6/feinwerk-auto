@@ -95,7 +95,7 @@ Locally, start `npx astro preview --port 4391` first and run Playwright with `PW
 
 ## Gates
 
-Every push runs `.github/workflows/ci.yml` on ubuntu: type check, 778 unit, build-output and docs tests, HTML validation, a link check (4,865 internal links on 73 pages), 88 end-to-end tests, 48 screenshot diffs, 120 axe runs (the same 48, plus every other page type in both themes on phone and desktop) and Lighthouse CI. Pushes to `main` and `phase-*` deploy to Pages only when all of it passes.
+Every push runs `.github/workflows/ci.yml` on ubuntu: type check, 778 unit, build-output and docs tests, HTML validation, a link check (4,865 internal links on 73 pages), 104 end-to-end tests, 48 screenshot diffs, 120 axe runs (the same 48, plus every other page type in both themes on phone and desktop) and Lighthouse CI. Pushes to `main` and `phase-*` deploy to Pages only when all of it passes.
 
 Two checks are manual: the real-device pass (an iPhone on iOS 16 or 17 and a current Android, VoiceOver on the 廣東話 page) and a native speaker's read of the French and Cantonese text. Neither is done yet.
 

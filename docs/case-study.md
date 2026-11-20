@@ -36,7 +36,7 @@ Booking is a `<dialog>` sheet in four steps: car, service, day and time, contact
 
 ## What the gates caught
 
-Every push runs the same checks: type check, 778 unit, build-output and docs tests, HTML validation, a link check over 4,865 links, 88 end-to-end tests, 48 screenshot diffs (3 pages × 4 languages × 2 themes × phone and desktop), 120 accessibility scans and Lighthouse. A few things they found that I wouldn't have seen by clicking around:
+Every push runs the same checks: type check, 778 unit, build-output and docs tests, HTML validation, a link check over 4,865 links, 104 end-to-end tests, 48 screenshot diffs (3 pages × 4 languages × 2 themes × phone and desktop), 120 accessibility scans and Lighthouse. A few things they found that I wouldn't have seen by clicking around:
 
 - **A layout shift that passed 2 runs out of 3.** Lighthouse measured CLS (Cumulative Layout Shift) 0.508 on the booking page in one run: the script hid steps 2 to 4 after the first paint whenever the paint won the race. CSS now hides them up front. Lighthouse CI had passed it because its default takes the best of 3 runs, so layout shift and page weight now have to pass on every run.
 - **A page 658 px wide on a 390 px phone.** A visually hidden "5 out of 5" escaped the review row and widened every home page in all four languages. Chrome didn't scroll, but iOS Safari can pan a page that wide. A test now checks the width of every home page.

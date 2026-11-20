@@ -26,7 +26,7 @@ Every Must item is fixed. Five Should items are fixed, two are left with a reaso
 | S5 | fixed | 0f97c50: Flotte, point relevé, boîte de transfert, sur place, on lit ses codes d'erreur, une rangée d'ateliers, centre de service de marque typique, 2,0 L with a no-break space, "ont toutes des panneaux", "redescendues à environ ±3 %" |
 | S6 | fixed, one left | 0f97c50: contact lead, review 5, vag.lead, 副水箱, 後泵把, 「裂咗條縫」, 睇下 in the posts too. 輪圈 → 呔鈴 left for the native reader, as the review said |
 | S7 | fixed | 0f97c50: 汽修店 (7 places), 厢式车, 「尽头的那一间」, review 5 rewritten |
-| New | fixed | a86f19c: Lighthouse saw CLS 0.13 on Home in 1 of 3 runs (CI run 44692934822). The status chip paints "See hours", the script writes "Closed · opens tomorrow 8:00 a.m.", and at 412 px the longer label wrapped the chips row. The hero chips now sit one per row; a new e2e test fails on the old CSS at 412 px in all four languages |
+| New | fixed | 95d8afd: Lighthouse saw CLS 0.13 on Home in 1 of 3 runs (CI run 44692934822). The status chip paints "See hours", the script writes "Closed · opens tomorrow 8:00 a.m.", and at 412 px the longer label wrapped the chips row. The hero chips now sit one per row; a new e2e test fails on the old CSS at 412 px in all four languages |
 | p6 pre-review | done | English was never read in Phase 6. Read in Phase 7: Canadian spelling holds, no "dealer" or "authorized" outside key names, one line changed (M5 row). 简体中文 now has phone screenshots in both themes in `docs/screenshots/phone/` |
 
 ## How it was checked
