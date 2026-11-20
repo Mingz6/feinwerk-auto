@@ -63,3 +63,26 @@ test.describe("open/closed chip on the Vancouver clock", () => {
     await expect(page.locator('tr[data-weekday="1"]')).toHaveAttribute("aria-current", "date");
   });
 });
+
+// Lighthouse saw a layout shift of 0.13 on Home in 1 run of 3 (CI run 44692934822, 23:15 in Vancouver): the chip
+// paints "See hours", then the script writes "Closed · opens tomorrow 8:00 a.m.", and when the longer label no longer
+// fit beside the rating chip it wrapped, pushing everything below down. The live label must never move the page.
+for (const prefix of ["", "fr/", "zh-hans/", "zh-hk/"]) {
+  for (const width of [360, 412, 768, 1440]) {
+    test(`home ${prefix || "en/"} at ${width} px: the live open/closed label moves nothing below it`, async ({ page }) => {
+      await page.clock.setFixedTime(new Date("2026-11-22T07:00:00Z")); // Saturday 23:00 in Vancouver: closed until Monday
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(prefix || "./");
+      await expect(page.locator(".hero-copy [data-status-detail]")).not.toBeEmpty();
+      const html = await (await page.request.get(prefix || "./")).text();
+      const painted = html.match(/data-status-label[^>]*>([^<]*)</)![1];
+      const top = () => page.locator(".hero-copy .actions").evaluate((e) => e.getBoundingClientRect().top);
+      const live = await top();
+      await page.evaluate((text) => {
+        document.querySelector(".hero-copy [data-status-label]")!.textContent = text;
+        document.querySelector(".hero-copy [data-status-detail]")!.textContent = "";
+      }, painted);
+      expect(await top()).toBe(live);
+    });
+  }
+}
