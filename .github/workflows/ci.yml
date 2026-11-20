@@ -57,3 +57,5 @@ jobs:
             test-results/
             .lighthouseci/
           retention-days: 7
+          # .lighthouseci is a hidden folder; upload-artifact skips those unless asked.
+          include-hidden-files: true
