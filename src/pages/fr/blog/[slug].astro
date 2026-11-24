@@ -1,0 +1,9 @@
+---
+import Post from "../../../views/Post.astro";
+import { POSTS, type PostSlug } from "../../../data/posts";
+
+export const getStaticPaths = () => POSTS.map((p) => ({ params: { slug: p.slug } }));
+const slug = Astro.params.slug as PostSlug;
+---
+
+<Post locale="fr" slug={slug} />
